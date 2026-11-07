@@ -57,7 +57,7 @@ const jsonLd = {
     <meta name="page-kind" content="place" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    {site && <link rel="canonical" href={abs(Astro.url.pathname)} />}
+    {site && <link rel="canonical" href={abs(Astro.url.pathname.replace(/(.)\/$/, '$1'))} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Divine Mercy Shrine, Siari Hills" />
     <meta property="og:title" content={fullTitle} />

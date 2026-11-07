@@ -16,9 +16,10 @@ npm run build        # static site in dist/
 npm run preview      # serve dist/ at http://127.0.0.1:4321
 ```
 
-Deploy `dist/` to any static host (GitHub Pages, Netlify, Cloudflare Pages, Vercel). Pages are
-built as `shrine.html`, `visit.html`… and linked as `/shrine`, `/visit`, which these hosts resolve.
-Set the real domain in `astro.config.mjs` (`site:`) so canonical and share links become absolute.
+Deploy `dist/` to any static host (Vercel, Netlify, Cloudflare Pages, GitHub Pages). Pages are
+built as folders (`shrine/index.html`, `visit/index.html`…), which every host serves at `/shrine`,
+`/visit`. The live site is https://siari-divine.vercel.app; if the domain changes, update `site:` in
+`astro.config.mjs` so canonical and share links follow it.
 
 ## Pages
 
