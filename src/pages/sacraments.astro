@@ -1,0 +1,290 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Photo from '../components/Photo.astro';
+import Feasts from '../components/Feasts.astro';
+import ComposeForm from '../components/ComposeForm.astro';
+import { LINKS } from '../data/site.js';
+import { MASSES, CONFESSIONS, SCHEDULE_CHECKED } from '../data/schedule.js';
+import { shrinePhoto } from '../data/photos.js';
+
+const hasInterior = !!shrinePhoto('interior');
+const SACRAMENTS = [
+  {
+    id: 'baptism',
+    name: 'Baptism',
+    text: 'For infants and children. Parents and godparents attend a short preparation talk before the day.',
+    bring: [
+      'The child’s birth certificate from the PSA (a photocopy)',
+      'The parents’ marriage certificate, church or civil, if married',
+      'The names of the godparents: practising Catholics, at least sixteen years old, who have received Confirmation',
+    ],
+  },
+  {
+    id: 'wedding',
+    name: 'Holy Matrimony',
+    text: 'Speak to the office several months ahead. Both parishes post the marriage banns on three Sundays before the wedding.',
+    bring: [
+      'Baptismal and Confirmation certificates of the bride and groom, newly issued and marked “for marriage purposes”',
+      'A Certificate of No Marriage Record (CENOMAR) from the PSA for each of you',
+      'A marriage licence from the civil registrar, or your PSA marriage certificate if you are already civilly married',
+      'The canonical interview with the priest and the Pre-Cana seminar',
+      'The names of your principal sponsors',
+    ],
+  },
+  {
+    id: 'confession',
+    name: 'Confession',
+    text: 'Many pilgrims go to Confession before Divine Mercy Sunday. Ask the office for the times, or watch the Facebook page in the days before the feast.',
+    bring: [],
+  },
+  {
+    id: 'sick',
+    name: 'The sick, the dying and funerals',
+    text: 'For the Anointing of the Sick at home or in hospital, and for funeral Masses, message the office with the name, the place and the day.',
+    bring: [],
+  },
+];
+---
+<Base
+  title="Masses & Sacraments"
+  description="Mass times at the Divine Mercy Shrine on Siari Hills, Mass intentions from anywhere, Confession, and what to prepare for Baptism and Holy Matrimony."
+  current="/sacraments"
+  navTone="light"
+  page="sacraments"
+>
+  <PageHead
+    crumb="Masses & Sacraments"
+    kicker="Masses, Confession and the sacraments"
+    title="Masses and <em>sacraments</em>"
+    lead="Where to find this week’s Mass times, how to offer a Mass for someone from wherever you are, and what to prepare for a baptism or a wedding."
+  >
+    {hasInterior && (
+      <div slot="art" class="sac-head__art">
+        <Photo id="interior" sizes="(max-width: 900px) 100vw, 42vw" widths={[500, 800]} loading="eager" fetchpriority="high" />
+      </div>
+    )}
+  </PageHead>
+
+  <section class="section masses on-night" id="masses" data-tone="dark" aria-labelledby="masses-title">
+    <div class="wrap masses__grid">
+      <div class="masses__head">
+        <p class="label">Holy Mass</p>
+        <h2 id="masses-title">Mass times <em>this week</em></h2>
+      </div>
+      {MASSES.length > 0 ? (
+        <div class="masses__table">
+          <table>
+            <caption class="visually-hidden">Mass times at the shrine</caption>
+            <tbody>
+              {MASSES.map((m) => (
+                <tr><th scope="row">{m.days}</th><td>{m.times.join(' · ')}</td></tr>
+              ))}
+              {CONFESSIONS && <tr><th scope="row">Confession</th><td>{CONFESSIONS}</td></tr>}
+            </tbody>
+          </table>
+          {SCHEDULE_CHECKED && <p class="muted masses__checked">Confirmed with the shrine office on {SCHEDULE_CHECKED}. Feast days and Holy Week follow their own schedule.</p>}
+        </div>
+      ) : (
+        <div class="masses__pointer">
+          <p class="masses__lead">Mass times change with the seasons, feasts and Holy Week, so the shrine posts each week’s schedule on its Facebook page.</p>
+          <div class="masses__actions">
+            <a class="btn" href={LINKS.facebook} target="_blank" rel="noopener">See this week’s Mass times</a>
+            <a class="btn btn--tonal" href={LINKS.messenger} target="_blank" rel="noopener">Ask the office on Messenger</a>
+          </div>
+          <p class="masses__hour">Every day at three in the afternoon, devotees pray the Chaplet: <a class="link" href="/devotion#chaplet">pray it with the bead guide</a>.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section intentions" id="intentions" data-tone="light" aria-labelledby="intentions-title">
+    <div class="wrap intentions__grid">
+      <div class="intentions__head">
+        <p class="label">From wherever you are</p>
+        <h2 id="intentions-title">Offer a <em>Mass intention</em></h2>
+        <p class="muted">Ask for a Mass to be offered for the living or the dead, in thanksgiving or for healing. Write the names and your intention; the form prepares the message for the shrine’s Messenger.</p>
+        <p class="muted">A Mass intention is customarily given with an offering. The office will tell you how to send it.</p>
+      </div>
+      <ComposeForm id="intention-form" subject="Mass intention request" submitLabel="Prepare the intention">
+        <div class="form__row">
+          <div class="field" data-required="Write your name.">
+            <label for="i-name">Your name</label>
+            <input id="i-name" name="name" type="text" autocomplete="name" aria-describedby="i-name-err" />
+            <p class="field__error" id="i-name-err"></p>
+          </div>
+          <div class="field" data-required="Write a mobile number or email the office can reply to.">
+            <label for="i-contact">Mobile number or email</label>
+            <input id="i-contact" name="contact" type="text" aria-describedby="i-contact-err" />
+            <p class="field__error" id="i-contact-err"></p>
+          </div>
+        </div>
+        <fieldset class="field choices" data-required="Choose the kind of intention.">
+          <legend>The intention</legend>
+          <label class="choice"><input type="radio" name="kind" value="Thanksgiving" /><span>Thanksgiving</span></label>
+          <label class="choice"><input type="radio" name="kind" value="Healing" /><span>Healing</span></label>
+          <label class="choice"><input type="radio" name="kind" value="Birthday" /><span>Birthday</span></label>
+          <label class="choice"><input type="radio" name="kind" value="Eternal repose" /><span>Eternal repose</span></label>
+          <label class="choice"><input type="radio" name="kind" value="Special intention" /><span>Special intention</span></label>
+          <p class="field__error"></p>
+        </fieldset>
+        <div class="field" data-required="Write the names to be remembered.">
+          <label for="i-for">For (the names to be remembered)</label>
+          <textarea id="i-for" name="for" rows="3" aria-describedby="i-for-err"></textarea>
+          <p class="field__error" id="i-for-err"></p>
+        </div>
+        <div class="field">
+          <label for="i-date">Preferred day (optional)</label>
+          <input id="i-date" name="date" type="date" />
+        </div>
+      </ComposeForm>
+    </div>
+  </section>
+
+  <section class="section sacraments limewash" id="sacraments" data-tone="light" aria-labelledby="sac-title">
+    <div class="wrap">
+      <div class="sacraments__head">
+        <p class="label">Preparing for a sacrament</p>
+        <h2 id="sac-title">Baptism, weddings <em>and Confession</em></h2>
+        <p class="lead muted">Most parishes in the Philippines ask for the documents below. The shrine office confirms the list and the schedule for your date.</p>
+      </div>
+      <div class="sacraments__list">
+        {SACRAMENTS.map((s) => (
+          <article class="sacrament" id={s.id} aria-labelledby={`${s.id}-t`}>
+            <h3 id={`${s.id}-t`}>{s.name}</h3>
+            <p class="muted">{s.text}</p>
+            {s.bring.length > 0 && (
+              <ul>
+                {s.bring.map((b) => <li>{b}</li>)}
+              </ul>
+            )}
+          </article>
+        ))}
+      </div>
+      <div class="sacraments__cta">
+        <a class="btn" href="/contact#message">Write to the shrine office</a>
+      </div>
+    </div>
+  </section>
+
+  <Feasts id="feasts" heading="Feasts in the coming months" />
+</Base>
+
+<style>
+  .sac-head__art {
+    overflow: hidden;
+    border-radius: var(--r-frame);
+  }
+  .sac-head__art :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .masses {
+    background:
+      radial-gradient(800px 420px at 90% 20%, rgb(29 74 110 / 0.4), transparent 70%),
+      var(--night);
+  }
+  .masses__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .masses__head h2 {
+    margin-top: 16px;
+  }
+  .masses__head h2 em {
+    color: var(--pale);
+  }
+  .masses__pointer {
+    display: grid;
+    gap: 22px;
+  }
+  .masses__lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.15rem + 1vw, 2rem);
+    line-height: 1.3;
+  }
+  .masses__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .masses__hour {
+    color: #d5dbe4;
+  }
+  .masses__table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .masses__table th,
+  .masses__table td {
+    padding: 16px 0;
+    border-bottom: 1px solid rgb(244 241 234 / 0.12);
+    text-align: left;
+    vertical-align: top;
+  }
+  .masses__table th {
+    font-weight: 500;
+    width: 40%;
+  }
+  .masses__table td {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .masses__checked {
+    margin-top: 14px;
+    font-size: var(--step-small);
+  }
+  .intentions__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .intentions__head {
+    display: grid;
+    gap: 16px;
+  }
+  .sacraments__head {
+    display: grid;
+    gap: 16px;
+    margin-bottom: clamp(28px, 4vw, 52px);
+  }
+  .sacraments__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(24px, 4vw, 64px);
+  }
+  .sacrament {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 26px 0;
+    border-top: 1px solid color-mix(in srgb, var(--night) 12%, transparent);
+  }
+  .sacrament h3 {
+    font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
+  }
+  .sacrament ul {
+    margin: 4px 0 0;
+    padding-left: 1.1em;
+    display: grid;
+    gap: 8px;
+  }
+  .sacrament li::marker {
+    color: var(--mercy);
+  }
+  .sacraments__cta {
+    margin-top: 28px;
+  }
+  @media (max-width: 900px) {
+    .masses__grid,
+    .intentions__grid,
+    .sacraments__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -5,3 +5,6 @@ dist/
 tests/shots/
 tests/.cache/
 *.log
+
+# Private layout previews with photographs the site has no permission to publish. Never commit.
+src/assets/shrine-preview/

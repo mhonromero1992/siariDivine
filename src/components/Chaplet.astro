@@ -1,0 +1,263 @@
+---
+/**
+ * The Chaplet of Divine Mercy, bead by bead (Diary of St. Faustina, 475–476).
+ * Prayed on ordinary rosary beads: the opening prayers on the pendant, five decades, then
+ * "Holy God" three times.
+ */
+const PRAYERS = {
+  cross: 'In the name of the Father, and of the Son, and of the Holy Spirit. Amen.',
+  ourFather:
+    'Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses, as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.',
+  hailMary:
+    'Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.',
+  creed:
+    'I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.',
+  eternalFather:
+    'Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world.',
+  passion: 'For the sake of His sorrowful Passion, have mercy on us and on the whole world.',
+  holyGod: 'Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.',
+  trust: 'Jesus, I trust in You.',
+};
+
+const steps = [
+  { bead: 'cross', title: 'The Sign of the Cross', text: PRAYERS.cross, where: 'On the crucifix' },
+  { bead: 'p0', title: 'Our Father', text: PRAYERS.ourFather, where: 'Opening prayers' },
+  { bead: 'p1', title: 'Hail Mary', text: PRAYERS.hailMary, where: 'Opening prayers' },
+  { bead: 'p2', title: 'The Apostles’ Creed', text: PRAYERS.creed, where: 'Opening prayers' },
+];
+for (let d = 1; d <= 5; d++) {
+  steps.push({ bead: `d${d}-0`, title: 'Eternal Father', text: PRAYERS.eternalFather, where: `Decade ${d} of 5, the large bead` });
+  for (let b = 1; b <= 10; b++) {
+    steps.push({ bead: `d${d}-${b}`, title: 'For the sake of His sorrowful Passion', text: PRAYERS.passion, where: `Decade ${d} of 5, bead ${b} of 10` });
+  }
+}
+for (let i = 1; i <= 3; i++) steps.push({ bead: 'medal', title: `Holy God, ${i} of 3`, text: PRAYERS.holyGod, where: 'The closing prayer, three times' });
+steps.push({ bead: 'medal', title: 'Jesus, I trust in You', text: PRAYERS.trust, where: 'The end of the Chaplet' });
+
+/* bead positions: 55 beads on a loop (5 x (1 large + 10 small)), a pendant of three and a cross */
+const cx = 200, cy = 196, r = 150;
+const loop = [];
+const step = 360 / 58;
+let k = 0;
+for (let d = 1; d <= 5; d++) {
+  for (let b = 0; b <= 10; b++) {
+    const theta = ((90 - (k + 2) * step) * Math.PI) / 180;
+    loop.push({ id: `d${d}-${b}`, x: cx + r * Math.cos(theta), y: cy + r * Math.sin(theta), big: b === 0, d, b });
+    k++;
+  }
+}
+const pendant = [
+  { id: 'p0', x: cx, y: 380, big: true },
+  { id: 'p1', x: cx, y: 406, big: false },
+  { id: 'p2', x: cx, y: 428, big: false },
+];
+const medal = { x: cx, y: cy + r + 4 };
+const path = `M ${medal.x} ${medal.y} ` + loop.map((p) => `L ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') + ` Z`;
+---
+<section class="section chaplet on-night" id="chaplet" data-tone="dark" aria-labelledby="chaplet-title" data-chaplet>
+  <div class="wrap chaplet__grid">
+    <div class="chaplet__intro">
+      <p class="label">The Chaplet of Divine Mercy</p>
+      <h2 id="chaplet-title">Pray the Chaplet, <em>bead by bead</em></h2>
+      <p class="chaplet__lead">The Chaplet is prayed on an ordinary rosary. Follow the beads here, with the words for each one. Devotees pray it at three in the afternoon, the Hour of Mercy.</p>
+      <p class="chaplet__hour" data-hour-flag><span data-hour-text>Every day at three in the afternoon</span></p>
+    </div>
+
+    <div class="chaplet__tool" tabindex="-1" data-chaplet-tool>
+      <svg class="chaplet__beads" viewBox="0 0 400 470" role="img" aria-labelledby="beads-t">
+        <title id="beads-t">A rosary: five decades of beads on a loop, three beads and a cross on the pendant</title>
+        <path d={path} fill="none" stroke="#f4f1ea" stroke-opacity="0.18" stroke-width="1.2" />
+        <path d={`M ${medal.x} ${medal.y} L ${cx} 444`} stroke="#f4f1ea" stroke-opacity="0.18" stroke-width="1.2" />
+        {loop.map((p) => (
+          <circle class:list={['bead', p.big && 'bead--big']} cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r={p.big ? 8.5 : 5.2} data-bead={p.id} />
+        ))}
+        {pendant.map((p) => (
+          <circle class:list={['bead', p.big && 'bead--big']} cx={p.x} cy={p.y} r={p.big ? 8.5 : 5.2} data-bead={p.id} />
+        ))}
+        <g class="bead bead--medal" data-bead="medal">
+          <ellipse cx={medal.x} cy={medal.y + 6} rx="11" ry="13" />
+        </g>
+        <g class="bead bead--cross" data-bead="cross">
+          <path d={`M ${cx} 444 V 470 M ${cx - 9} 452 H ${cx + 9}`} stroke-width="4" stroke-linecap="round" />
+        </g>
+        <g class="chaplet__center" aria-hidden="true">
+          <text x={cx} y={cy - 6} text-anchor="middle" data-count>1</text>
+          <text x={cx} y={cy + 22} text-anchor="middle" class="chaplet__of">of {steps.length}</text>
+        </g>
+      </svg>
+
+      <div class="chaplet__prayer">
+        <p class="chaplet__where" data-where>{steps[0].where}</p>
+        <h3 class="chaplet__title" data-title aria-live="polite">{steps[0].title}</h3>
+        <p class="chaplet__text" data-text>{steps[0].text}</p>
+        <div class="chaplet__controls">
+          <button class="btn" type="button" data-next>Next prayer</button>
+          <button class="btn btn--tonal" type="button" data-prev>Previous prayer</button>
+          <button class="chaplet__restart" type="button" data-restart>Start again</button>
+        </div>
+        <p class="chaplet__keys muted">Keyboard: the left and right arrow keys move between beads.</p>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-steps set:html={JSON.stringify(steps)} />
+</section>
+
+<script>
+  import '../scripts/chaplet.js';
+</script>
+
+<style>
+  .chaplet {
+    background:
+      radial-gradient(800px 520px at 80% 30%, rgb(166 30 54 / 0.18), transparent 70%),
+      radial-gradient(700px 520px at 20% 80%, rgb(29 74 110 / 0.35), transparent 70%),
+      var(--night);
+  }
+  .chaplet__grid {
+    display: grid;
+    gap: clamp(28px, 4vw, 56px);
+  }
+  .chaplet__intro {
+    display: grid;
+    gap: 18px;
+    max-width: 46em;
+  }
+  .chaplet__intro h2 em {
+    color: var(--pale);
+  }
+  .chaplet__lead {
+    color: #d5dbe4;
+  }
+  .chaplet__hour {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-variant-numeric: lining-nums;
+  }
+  .chaplet__hour[data-hour-now='true'] {
+    color: #ffc2cc;
+  }
+  .chaplet__tool {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(24px, 5vw, 80px);
+    align-items: center;
+  }
+  .chaplet__tool:focus-visible {
+    box-shadow: none;
+  }
+  .chaplet__beads {
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    justify-self: center;
+    overflow: visible;
+  }
+  .bead {
+    fill: rgb(244 241 234 / 0.16);
+    stroke: rgb(244 241 234 / 0.45);
+    stroke-width: 1;
+    cursor: pointer;
+    transition:
+      fill 400ms var(--ease-out),
+      stroke 400ms,
+      filter 400ms;
+  }
+  .bead--cross {
+    fill: none;
+    stroke: rgb(244 241 234 / 0.55);
+  }
+  .bead.is-done {
+    fill: rgb(169 212 238 / 0.55);
+    stroke: rgb(169 212 238 / 0.8);
+  }
+  .bead--cross.is-done {
+    fill: none;
+    stroke: var(--pale);
+  }
+  .bead.is-now {
+    fill: #ff9fb0;
+    stroke: #ffffff;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgb(255 120 140 / 0.95)) drop-shadow(0 0 14px rgb(169 212 238 / 0.7));
+  }
+  .bead--cross.is-now {
+    fill: none;
+    stroke: #ffffff;
+  }
+  .chaplet__center text {
+    fill: var(--limewash);
+    font-family: var(--font-display);
+    font-size: 54px;
+    font-variant-numeric: lining-nums;
+  }
+  .chaplet__center .chaplet__of {
+    font-family: var(--font-text);
+    font-size: 14px;
+    fill: var(--on-night-muted);
+  }
+  .chaplet__prayer {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    min-height: 340px;
+  }
+  .chaplet__where {
+    font-size: var(--step-label);
+    font-weight: 500;
+    color: #ffb3c0;
+    font-variant-numeric: lining-nums;
+  }
+  .chaplet__title {
+    font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.6rem);
+    line-height: 1.1;
+  }
+  .chaplet__text {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+    line-height: 1.45;
+    color: #e6e9ef;
+    max-width: 34em;
+  }
+  .chaplet__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin-top: 10px;
+  }
+  .chaplet__restart {
+    min-height: 44px;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--pale);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .chaplet__restart:hover {
+    color: var(--limewash);
+  }
+  .chaplet__keys {
+    font-size: var(--step-small);
+  }
+  @media (max-width: 900px) {
+    .chaplet__tool {
+      grid-template-columns: 1fr;
+    }
+    .chaplet__beads {
+      max-width: 340px;
+    }
+    .chaplet__prayer {
+      min-height: 0;
+    }
+    .chaplet__controls .btn {
+      flex: 1 1 180px;
+    }
+  }
+  @media (hover: none) {
+    .chaplet__keys {
+      display: none;
+    }
+  }
+</style>

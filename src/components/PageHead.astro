@@ -1,0 +1,112 @@
+---
+const { title, kicker, lead, tone = 'light', crumb, id = 'page-title' } = Astro.props;
+---
+<section class:list={['page-head', tone === 'dark' ? 'on-night' : 'limewash']} data-tone={tone} aria-labelledby={id}>
+  <div class="wrap page-head__grid">
+    <div class="page-head__text">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><span aria-current="page">{crumb}</span></li>
+        </ol>
+      </nav>
+      <p class="label">{kicker}</p>
+      <h1 id={id} class="page-head__title" set:html={title} />
+      {lead && <p class="lead page-head__lead">{lead}</p>}
+      <div class="page-head__actions"><slot name="actions" /></div>
+    </div>
+    <div class="page-head__art">
+      <slot name="art" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-head {
+    position: relative;
+    padding-block: calc(var(--nav-h) + clamp(56px, 7vw, 110px)) clamp(48px, 6vw, 96px);
+    overflow: clip;
+  }
+  .page-head__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: end;
+  }
+  .page-head__text {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+  .page-head__title {
+    font-size: clamp(2.6rem, 1.4rem + 4.4vw, 5.4rem);
+    line-height: 1;
+    max-width: 13em;
+  }
+  .page-head__title :global(em) {
+    color: var(--sea);
+  }
+  .on-night .page-head__title :global(em) {
+    color: var(--pale);
+  }
+  .page-head__lead {
+    color: var(--muted);
+  }
+  .on-night .page-head__lead {
+    color: #d5dbe4;
+  }
+  .page-head__actions:empty {
+    display: none;
+  }
+  .page-head__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .page-head__art {
+    align-self: stretch;
+    display: grid;
+    align-items: end;
+  }
+  .page-head__art:empty {
+    display: none;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 4px;
+    padding: 0;
+    list-style: none;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .on-night .crumbs ol {
+    color: var(--on-night-muted);
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 6px;
+    opacity: 0.6;
+  }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .crumbs span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  @media (max-width: 900px) {
+    .page-head__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

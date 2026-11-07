@@ -57,7 +57,7 @@ const C = {
   ridgeMid: hex('#1c2a42'),
   hill: hex('#0f1a28'),
   hillNear: hex('#0b1420'),
-  red: hex('#ff5a72'),
+  red: hex('#ff4d6a'),
   pale: hex('#cdeaff'),
 };
 
@@ -182,19 +182,19 @@ function ridgeMaterial(color, haze, hazeAmount) {
  * A ray: a wedge of light from the heart. The across-coordinate is computed from the wedge's own
  * geometry (not from UVs, which shear across a trapezoid's two triangles).
  */
-function rayMaterial(color, uniforms, w0, w1, length) {
+function rayMaterial(color, uniforms, w0, w1, length, gain = 1) {
   return new ShaderMaterial({
     transparent: true,
     depthWrite: false,
     blending: AdditiveBlending,
     side: DoubleSide,
-    uniforms: { ...uniforms, uColor: { value: color }, uW0: { value: w0 }, uW1: { value: w1 }, uLen: { value: length } },
+    uniforms: { ...uniforms, uColor: { value: color }, uW0: { value: w0 }, uW1: { value: w1 }, uLen: { value: length }, uGain: { value: gain } },
     vertexShader: /* glsl */ `
       varying vec2 vLocal;
       void main(){ vLocal = position.xy; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
     `,
     fragmentShader: /* glsl */ `
-      uniform vec3 uColor; uniform float uTime, uRay, uFade, uW0, uW1, uLen;
+      uniform vec3 uColor; uniform float uTime, uRay, uFade, uW0, uW1, uLen, uGain;
       varying vec2 vLocal;
       ${NOISE}
       void main(){
@@ -207,7 +207,7 @@ function rayMaterial(color, uniforms, w0, w1, length) {
         float len = pow(1.0 - t, 1.25) * smoothstep(0.0, 0.03, t);
         // fine streaks of light that drift outward along the ray
         float streak = 0.62 + 0.38 * vnoise(vec2(s * 7.0 + 3.0, t * 3.0 - uTime * 0.16));
-        float a = edge * (0.13 + body * 0.34) * len * streak;
+        float a = edge * (0.13 + body * 0.34) * len * streak * uGain;
         gl_FragColor = vec4(uColor * a * uRay * uFade, a);
       }
     `,
@@ -659,19 +659,19 @@ export function createHeroScene(canvas, { reducedMotion = false, onFirstFrame } 
 
   // the two rays: red to the left, pale to the right, both reaching out over the sea
   const rays = new Group();
-  const makeRay = (color, angle, length, width0, width1) => {
+  const makeRay = (color, angle, length, width0, width1, gain) => {
     const geo = new BufferGeometry();
     const p = new Float32Array([-width0 / 2, 0, 0, width0 / 2, 0, 0, width1 / 2, -length, 0, -width1 / 2, -length, 0]);
     geo.setAttribute('position', new BufferAttribute(p, 3));
     geo.setAttribute('uv', new BufferAttribute(new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), 2));
     geo.setIndex([0, 1, 2, 0, 2, 3]);
-    const mesh = new Mesh(geo, rayMaterial(color, uniforms, width0, width1, length));
+    const mesh = new Mesh(geo, rayMaterial(color, uniforms, width0, width1, length, gain));
     mesh.rotation.z = angle;
     return mesh;
   };
   // red to the viewer's left, pale to the right, as on the statue; the fan always faces the viewer
-  const redRay = makeRay(C.red, -0.66, 54, 0.3, 22);
-  const paleRay = makeRay(C.pale, 0.4, 50, 0.3, 18);
+  const redRay = makeRay(C.red, -0.66, 54, 0.3, 22, 2.1);
+  const paleRay = makeRay(C.pale, 0.4, 50, 0.3, 18, 1.0);
   rays.add(redRay, paleRay);
   rays.position.copy(heart).add(new Vector3(0, 0, 0.8));
   scene.add(rays);

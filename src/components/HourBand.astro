@@ -1,0 +1,150 @@
+---
+/** The Hour of Mercy: the one dusk band (DESIGN.md section 8). The dial keeps Manila time. */
+const ticks = Array.from({ length: 60 }, (_, i) => i);
+---
+<section class="section hour on-night" data-tone="dark" aria-labelledby="hour-title" data-hour-band>
+  <div class="wrap hour__grid">
+    <div class="hour__dial-wrap">
+      <svg class="hour__dial" viewBox="-160 -160 320 320" role="img" aria-labelledby="dial-t" data-dial>
+        <title id="dial-t">A clock keeping Philippine time; three o’clock is marked with the two rays</title>
+        <defs>
+          <radialGradient id="hd-glow" cx="0" cy="0" r="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#22334b" />
+            <stop offset="1" stop-color="#101a29" />
+          </radialGradient>
+        </defs>
+        <circle r="150" fill="url(#hd-glow)" />
+        <circle r="150" fill="none" stroke="#f4f1ea" stroke-opacity="0.14" stroke-width="1" />
+        {ticks.map((i) => (
+          <line
+            x1="0" y1={i % 5 === 0 ? -138 : -142} x2="0" y2="-148"
+            stroke={i === 15 ? '#ffffff' : '#f4f1ea'}
+            stroke-opacity={i % 5 === 0 ? 0.7 : 0.25}
+            stroke-width={i % 5 === 0 ? 2 : 1}
+            transform={`rotate(${i * 6})`}
+          />
+        ))}
+        <g transform="rotate(90)">
+          <path d="M0 -112 L -16 -60 L -4 -60 Z" fill="#d8435b" transform="rotate(-8)" />
+          <path d="M0 -112 L 4 -60 L 16 -60 Z" fill="#a9d4ee" transform="rotate(8)" />
+        </g>
+        <g data-hand="hour"><line y1="10" y2="-70" stroke="#f4f1ea" stroke-width="5" stroke-linecap="round" /></g>
+        <g data-hand="minute"><line y1="14" y2="-108" stroke="#f4f1ea" stroke-opacity="0.85" stroke-width="2.5" stroke-linecap="round" /></g>
+        <circle r="6" fill="#a61e36" stroke="#f4f1ea" stroke-width="2" />
+      </svg>
+      <p class="hour__now" data-dial-label aria-live="off">Philippine time</p>
+    </div>
+
+    <div class="hour__text">
+      <p class="label">Every day at three in the afternoon</p>
+      <h2 id="hour-title">The Hour of Mercy, <em>at three o’clock</em></h2>
+      <blockquote class="hour__quote">
+        <p>“At three o’clock, implore My mercy, especially for sinners.”</p>
+        <cite>Diary of St. Faustina, 1320</cite>
+      </blockquote>
+      <p class="hour__body">Three in the afternoon is the hour of Christ’s death. Devotees stop, wherever they are, to pray the Chaplet of Divine Mercy or simply to say: Jesus, I trust in You.</p>
+      <p class="hour__live" data-hour-flag><span data-hour-text>Every day at three in the afternoon</span></p>
+      <div class="hour__actions">
+        <a class="btn" href="/devotion#chaplet">Pray the Chaplet with the bead guide</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const dial = document.querySelector('[data-dial]');
+  if (dial) {
+    const hourHand = dial.querySelector('[data-hand="hour"]');
+    const minHand = dial.querySelector('[data-hand="minute"]');
+    const label = document.querySelector('[data-dial-label]');
+    const fmt = new Intl.DateTimeFormat('en-PH', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit' });
+    const tick = () => {
+      const now = new Date();
+      const manila = new Date(now.getTime() + (8 * 60 + now.getTimezoneOffset()) * 60000);
+      const h = manila.getHours() % 12;
+      const m = manila.getMinutes();
+      hourHand.setAttribute('transform', `rotate(${h * 30 + m * 0.5})`);
+      minHand.setAttribute('transform', `rotate(${m * 6})`);
+      if (label) label.textContent = `${fmt.format(now)} in Sindangan`;
+    };
+    tick();
+    setInterval(tick, 20000);
+  }
+</script>
+
+<style>
+  .hour {
+    background:
+      radial-gradient(900px 500px at 15% 50%, rgb(29 74 110 / 0.35), transparent 70%),
+      var(--night);
+  }
+  .hour__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(36px, 6vw, 110px);
+    align-items: center;
+  }
+  .hour__dial-wrap {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+  }
+  .hour__dial {
+    width: min(100%, 420px);
+    height: auto;
+  }
+  .hour__dial [data-hand] {
+    transition: transform 900ms var(--ease-out);
+  }
+  .hour__now {
+    font-size: var(--step-small);
+    color: var(--on-night-muted);
+    font-variant-numeric: lining-nums;
+  }
+  .hour__text {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .hour__text h2 em {
+    color: var(--pale);
+  }
+  .hour__quote {
+    margin: 0;
+  }
+  .hour__quote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2.25rem);
+    line-height: 1.2;
+    color: #ffd9df;
+  }
+  .hour__quote cite {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-size: var(--step-small);
+    color: var(--on-night-muted);
+  }
+  .hour__body {
+    max-width: 34em;
+    color: #d5dbe4;
+  }
+  .hour__live {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: var(--limewash);
+    font-variant-numeric: lining-nums;
+  }
+  .hour__live[data-hour-now='true'] {
+    color: #ffc2cc;
+  }
+  @media (max-width: 900px) {
+    .hour__grid {
+      grid-template-columns: 1fr;
+    }
+    .hour__dial {
+      width: min(78vw, 340px);
+    }
+  }
+</style>

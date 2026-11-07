@@ -1,0 +1,181 @@
+---
+import { LINKS, SHRINE, GETTING_HERE, DRESS_CODE } from '../data/site.js';
+import Photo from './Photo.astro';
+import { shrinePhoto } from '../data/photos.js';
+const { guideLink = true } = Astro.props;
+const hasChapel = !!shrinePhoto('chapel');
+---
+<section class="section visit limewash" id="visit" data-tone="light" aria-labelledby="visit-title">
+  <div class="wrap">
+    <p class="label">Plan your visit</p>
+    <h2 id="visit-title" class="visit__title">Finding the shrine</h2>
+    <p class="visit__moment">
+      <a href={LINKS.maps} target="_blank" rel="noopener">Siari Hills, <em>Sindangan</em></a>
+    </p>
+
+    <div class="visit__grid">
+      <div class="visit__ways">
+        <svg class="visit__road" viewBox="0 0 520 132" role="img" aria-labelledby="road-t road-d">
+          <title id="road-t">The shrine on the Regional Highway</title>
+          <desc id="road-d">A schematic, not to scale: the highway runs along the coast from Dipolog to Sindangan, with the sea to the west. The shrine stands above the road at Siari, before Sindangan town.</desc>
+          <path d="M0 108 C 90 96 160 112 250 100 C 340 88 420 104 520 96" fill="none" stroke="#1d4a6e" stroke-opacity="0.18" stroke-width="22" stroke-linecap="round" />
+          <path d="M16 60 C 110 52 180 66 262 56 C 344 46 424 60 504 54" fill="none" stroke="#101a29" stroke-width="3" stroke-linecap="round" />
+          <path d="M16 60 C 110 52 180 66 262 56 C 344 46 424 60 504 54" fill="none" stroke="#f4f1ea" stroke-width="1.2" stroke-dasharray="7 8" stroke-linecap="round" />
+          <circle cx="16" cy="60" r="6" fill="#101a29" />
+          <circle cx="504" cy="54" r="6" fill="#101a29" />
+          <g transform="translate(352 50)">
+            <path d="M0 0 L -9 -22 L -3 -22 Z" fill="#d8435b" />
+            <path d="M0 0 L 3 -22 L 9 -22 Z" fill="#7fb6da" />
+            <circle r="7" fill="#a61e36" stroke="#f4f1ea" stroke-width="2.5" />
+          </g>
+          <text x="16" y="34" font-family="Jost Variable, Jost, sans-serif" font-size="15" font-weight="500" fill="#101a29">Dipolog</text>
+          <text x="504" y="34" text-anchor="end" font-family="Jost Variable, Jost, sans-serif" font-size="15" font-weight="500" fill="#101a29">Sindangan</text>
+          <text x="352" y="88" text-anchor="middle" font-family="EB Garamond Variable, EB Garamond, serif" font-style="italic" font-size="19" fill="#a61e36">the shrine at Siari</text>
+          <text x="96" y="124" font-family="Jost Variable, Jost, sans-serif" font-size="12.5" fill="#1d4a6e" letter-spacing="0.02em">Sulu Sea</text>
+        </svg>
+
+        <dl class="ways">
+          {GETTING_HERE.map((w) => (
+            <div class="ways__row">
+              <dt>{w.from}</dt>
+              <dd>{w.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div class="visit__side">
+        {hasChapel && (
+          <a class="visit__photo-link" href="/shrine#gallery" aria-label="See photographs of the shrine">
+            <Photo id="chapel" class="visit__photo" sizes="(max-width: 900px) 100vw, 40vw" widths={[480, 800]} />
+          </a>
+        )}
+        <aside class:list={['visit__panel', hasChapel && 'has-photo']} aria-labelledby="before-title">
+          <h3 id="before-title">Before you come</h3>
+          <dl class="before">
+            <div><dt>Admission</dt><dd>Free.</dd></div>
+            <div><dt>What to wear</dt><dd>{DRESS_CODE.rule}</dd></div>
+            <div><dt>On the Healing Walk</dt><dd>Silence, and footwear off.</dd></div>
+            <div><dt>On the grounds</dt><dd>A candle gallery, the shrine office, a souvenir shop and public toilets.</dd></div>
+          </dl>
+          {guideLink && <a class="link" href="/visit">Read the visitor guide</a>}
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit__title {
+    margin-top: 16px;
+    font-size: var(--step-h2);
+  }
+  .visit__moment {
+    margin: clamp(10px, 2vw, 22px) 0 clamp(36px, 5vw, 72px);
+    font-family: var(--font-display);
+    font-weight: 430;
+    font-size: clamp(3rem, 1.2rem + 7vw, 6.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  .visit__moment a {
+    text-decoration: none;
+    color: var(--night);
+    background: linear-gradient(90deg, var(--ray-red) 0 50%, var(--pale) 50% 100%) 0 92% / 0 4px no-repeat;
+    transition: background-size 700ms var(--ease-out);
+  }
+  .visit__moment a:hover {
+    background-size: 100% 4px;
+  }
+  .visit__moment em {
+    color: var(--sea);
+  }
+  .visit__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+  }
+  .visit__road {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    margin-bottom: 28px;
+  }
+  .ways {
+    margin: 0;
+    display: grid;
+  }
+  .ways__row {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 18px;
+    padding: 18px 0;
+    border-top: 1px solid color-mix(in srgb, var(--night) 11%, transparent);
+  }
+  .ways dt {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.25;
+  }
+  .ways dd {
+    margin: 0;
+    color: var(--muted);
+  }
+  .visit__side {
+    display: grid;
+  }
+  .visit__photo-link {
+    display: block;
+    overflow: hidden;
+    border-radius: 6px 6px 0 0;
+  }
+  .visit__photo-link:focus-visible {
+    border-radius: 6px 6px 0 0;
+  }
+  .visit__photo-link :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: scale 800ms var(--ease-out);
+  }
+  .visit__photo-link:hover :global(img) {
+    scale: 1.03;
+  }
+  .visit__panel.has-photo {
+    border-radius: 0 0 6px 6px;
+  }
+  .visit__panel {
+    display: grid;
+    gap: 18px;
+    padding: clamp(24px, 3vw, 40px);
+    border-radius: 6px;
+    background: var(--limewash-2);
+  }
+  .visit__panel h3 {
+    font-size: 1.7rem;
+  }
+  .before {
+    margin: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .before dt {
+    font-weight: 500;
+  }
+  .before dd {
+    margin: 2px 0 0;
+    color: var(--muted);
+  }
+  @media (max-width: 900px) {
+    .visit__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .ways__row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

@@ -1,0 +1,267 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Photo from '../components/Photo.astro';
+import Grounds from '../components/Grounds.astro';
+import Gallery from '../components/Gallery.astro';
+import { SHRINE, LINKS, HEALING_WALK_SIGN } from '../data/site.js';
+import { shrinePhoto } from '../data/photos.js';
+
+const hasDusk = !!shrinePhoto('chapel-dusk');
+---
+<Base
+  title="The Shrine"
+  description="The Diocesan Shrine of the Divine Mercy on Siari Hills, Sindangan: its chapel of glass above the Sulu Sea, the tower, the roof-deck statue, the Healing Walk and the history of its Jubilee designations."
+  current="/shrine"
+  navTone="light"
+  page="shrine"
+>
+  <PageHead
+    crumb="The Shrine"
+    kicker={`Diocesan shrine · ${SHRINE.diocese}`}
+    title="The shrine on <em>Siari Hills</em>"
+    lead="A whitewashed chapel and its tower on a hilltop in Barangay Siari, Sindangan, with the Sulu Sea on one side and the mountains of Zamboanga del Norte on the other."
+  >
+    {hasDusk && (
+      <div slot="art" class="shrine-head__art">
+        <Photo id="chapel-dusk" sizes="(max-width: 900px) 100vw, 42vw" widths={[600, 900, 1300]} loading="eager" fetchpriority="high" />
+      </div>
+    )}
+  </PageHead>
+
+  <section class="section brief" data-tone="light" aria-labelledby="brief-title">
+    <div class="wrap brief__grid">
+      <div class="brief__head">
+        <p class="label">In brief</p>
+        <h2 id="brief-title">The shrine at a glance</h2>
+      </div>
+      <dl class="brief__list">
+        <div><dt>Name</dt><dd>{SHRINE.name}</dd></div>
+        <div><dt>Where</dt><dd>{SHRINE.hill}, {SHRINE.barangay}, {SHRINE.town}, {SHRINE.province}. On the Regional Highway between Dipolog and Sindangan.</dd></div>
+        <div><dt>Under the care of</dt><dd>{SHRINE.diocese}, {SHRINE.vicariate}</dd></div>
+        <div><dt>Nearby parish</dt><dd>{SHRINE.parish.name}, established {SHRINE.parish.established}</dd></div>
+        {SHRINE.designations.map((d) => (
+          <div><dt class="numerals">{d.year}</dt><dd>{d.text}</dd></div>
+        ))}
+        <div><dt>Admission</dt><dd>Free</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section facade on-night" data-tone="dark" aria-labelledby="facade-title">
+    <div class="wrap facade__grid">
+      <div class="facade__text">
+        <p class="label">On the upper façade of the chapel</p>
+        <h2 id="facade-title">One prayer in <em>three languages</em></h2>
+        <p class="facade__lead">The words of the image of the Divine Mercy are written across the front of the chapel in English, in Cebuano, the language of Sindangan, and in Polish, the language of St. Faustina.</p>
+      </div>
+      <ol class="facade__words">
+        {SHRINE.inscription.map((line) => (
+          <li>
+            <span class="facade__lang">{line.label}</span>
+            <span class="facade__line" lang={line.lang}>{line.text}.</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Grounds id="grounds" />
+
+  <section class="section sign limewash" data-tone="light" aria-labelledby="sign-title">
+    <div class="wrap sign__grid">
+      <div class="sign__photo">
+        <Photo id="gethsemane" sizes="(max-width: 900px) 100vw, 40vw" widths={[450, 900]} />
+      </div>
+      <div class="sign__text">
+        <p class="label">At the start of the Healing Walk</p>
+        <h2 id="sign-title">The sign on the <em>Healing Walk</em></h2>
+        <blockquote class="sign__quote">
+          <p>{HEALING_WALK_SIGN.text}</p>
+          <cite>{HEALING_WALK_SIGN.ref}</cite>
+        </blockquote>
+        <p class="muted">Pilgrims take off their footwear and keep silence along the path, which passes more than thirty statues of saints on its way down to the Garden of Gethsemane.</p>
+      </div>
+    </div>
+  </section>
+
+  <Gallery id="gallery" title="The shrine in photographs" intro="The chapel, its tower and statues, the stairs and the view, by day and at dusk. Select a photograph to see it large." />
+
+  <section class="section story" data-tone="light" aria-labelledby="story-title">
+    <div class="wrap--narrow story__inner">
+      <p class="label">The shrine’s story</p>
+      <h2 id="story-title">Photographs and memories of the <em>early years</em></h2>
+      <p class="lead muted">The shrine office and the Diocese of Dipolog keep the shrine’s history. If you have photographs of its building, its blessing or its first pilgrimages, the office would be glad to see them.</p>
+      <div class="story__actions">
+        <a class="btn" href="/contact#message">Write to the shrine office</a>
+        <a class="btn btn--tonal" href={LINKS.facebook} target="_blank" rel="noopener">Follow the shrine on Facebook</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .shrine-head__art {
+    overflow: hidden;
+    border-radius: var(--r-frame);
+  }
+  .shrine-head__art :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .shrine-head__art :global(svg) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .brief__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(24px, 5vw, 80px);
+  }
+  .brief__head {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+  .brief__list {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+  }
+  .brief__list div {
+    padding: 18px 0;
+    border-top: 1px solid color-mix(in srgb, var(--night) 12%, transparent);
+  }
+  .brief__list dt {
+    font-size: var(--step-label);
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .brief__list dd {
+    margin: 6px 0 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.3;
+  }
+  .facade {
+    background:
+      radial-gradient(800px 400px at 85% 50%, rgb(166 30 54 / 0.2), transparent 70%),
+      var(--night);
+  }
+  .facade__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: center;
+  }
+  .facade__text {
+    display: grid;
+    gap: 18px;
+  }
+  .facade__text h2 em {
+    color: var(--pale);
+  }
+  .facade__lead {
+    color: #d5dbe4;
+  }
+  .facade__words {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+  .facade__words li {
+    display: grid;
+    gap: 2px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  }
+  .facade__lang {
+    font-size: var(--step-label);
+    color: var(--on-night-muted);
+  }
+  .facade__line {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(2rem, 1.2rem + 3.2vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .facade__words li:nth-child(1) .facade__line {
+    color: var(--limewash);
+  }
+  .facade__words li:nth-child(2) .facade__line {
+    color: #ffc2cc;
+  }
+  .facade__words li:nth-child(3) .facade__line {
+    color: var(--pale);
+  }
+  .sign__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: center;
+  }
+  .sign__photo :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--r-frame);
+  }
+  .sign__photo:not(:has(img)) {
+    display: none;
+  }
+  .sign__grid:not(:has(.sign__photo img)) {
+    grid-template-columns: 1fr;
+  }
+  .sign__text {
+    display: grid;
+    gap: 18px;
+  }
+  .sign__quote {
+    margin: 0;
+  }
+  .sign__quote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.3rem);
+    line-height: 1.2;
+  }
+  .sign__quote cite {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .story {
+    background: var(--limewash-2);
+  }
+  .story__inner {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+  .story__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  @media (max-width: 900px) {
+    .brief__grid,
+    .facade__grid,
+    .sign__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .brief__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

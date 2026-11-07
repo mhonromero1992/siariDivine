@@ -1,0 +1,324 @@
+---
+import { getImage } from 'astro:assets';
+import GroundsArt from './GroundsArt.astro';
+import { STATIONS } from '../data/site.js';
+import { shrinePhoto, STATION_PHOTO } from '../data/photos.js';
+
+const { heading = true, id = 'grounds' } = Astro.props;
+
+/* each station's photograph, when the shrine has one */
+const stations = await Promise.all(
+  STATIONS.map(async (s) => {
+    const p = shrinePhoto(STATION_PHOTO[s.id]);
+    if (!p) return { ...s, photo: null };
+    const w = p.img.width;
+    const small = await getImage({ src: p.img, width: Math.min(560, w), format: 'webp' });
+    const large = await getImage({ src: p.img, width: Math.min(1120, w), format: 'webp' });
+    return {
+      ...s,
+      photo: {
+        src: large.src,
+        srcset: `${small.src} ${small.attributes.width}w, ${large.src} ${large.attributes.width}w`,
+        alt: p.alt,
+        w,
+        h: p.img.height,
+        pos: s.id === 'arch' ? '50% 22%' : s.id === 'walk-of-faith' ? '50% 40%' : '50% 40%',
+      },
+    };
+  }),
+);
+const anyPhoto = stations.some((s) => s.photo);
+/* where each station sits on the drawing, in % of its 1600 x 900 frame */
+const SPOTS = {
+  arch: [22.9, 77],
+  'walk-of-faith': [32.8, 70.8],
+  'our-lady': [43.8, 43.5],
+  chapel: [70.5, 33],
+  tower: [58.4, 18.2],
+  'roof-deck': [67.4, 15.6],
+  petitions: [75.4, 37.4],
+  'healing-walk': [85.6, 50.5],
+};
+const first = STATIONS[0];
+---
+<section class="section grounds" id={id} data-tone="light" aria-labelledby={`${id}-title`} data-grounds>
+  {heading && (
+    <div class="wrap grounds__head">
+      <p class="label">Eight stations, from the highway to the roof deck</p>
+      <h2 id={`${id}-title`}>The grounds of the shrine, <em>step by step</em></h2>
+      <p class="lead muted">Climb from the arch on the highway to the statue on the roof, then walk down through the saints to Gethsemane. Choose a station to read about it.</p>
+    </div>
+  )}
+  {!heading && <h2 id={`${id}-title`} class="visually-hidden">The grounds, station by station</h2>}
+
+  <div class="grounds__stage" data-moment="route">
+    <div class="grounds__frame">
+      <GroundsArt />
+      <div class="grounds__spots">
+        {STATIONS.map((s, i) => (
+          <button
+            class="spot"
+            type="button"
+            style={`left:${SPOTS[s.id][0]}%;top:${SPOTS[s.id][1]}%`}
+            data-station={s.id}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            aria-controls={`${id}-panel`}
+          >
+            <span aria-hidden="true">{s.n}</span>
+            <span class="visually-hidden">Station {s.n}: {s.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="wrap grounds__below">
+      <div class:list={['grounds__panel', anyPhoto && 'has-photo']} id={`${id}-panel`} aria-live="polite" data-panel>
+        {anyPhoto && (
+          <div class="grounds__photo" data-panel-photo hidden={!stations[0].photo}>
+            <img
+              src={stations[0].photo?.src}
+              srcset={stations[0].photo?.srcset}
+              sizes="(max-width: 900px) 92vw, 46vw"
+              width={stations[0].photo?.w}
+              height={stations[0].photo?.h}
+              alt={stations[0].photo?.alt ?? ''}
+              style={`object-position:${stations[0].photo?.pos ?? 'center'}`}
+              loading="lazy"
+              decoding="async"
+              data-panel-img
+            />
+          </div>
+        )}
+        <p class="grounds__num numerals" data-panel-num>Station {first.n} of {STATIONS.length}</p>
+        <h3 data-panel-name>{first.name}</h3>
+        <p class="muted" data-panel-text>{first.text}</p>
+        <div class="grounds__steps">
+          <button class="btn btn--tonal btn--small" type="button" data-step="-1">Previous station</button>
+          <button class="btn btn--tonal btn--small" type="button" data-step="1">Next station</button>
+        </div>
+      </div>
+      <ol class="grounds__list">
+        {STATIONS.map((s, i) => (
+          <li>
+            <button type="button" data-station={s.id} aria-pressed={i === 0 ? 'true' : 'false'} aria-controls={`${id}-panel`}>
+              <span class="numerals">{String(s.n).padStart(2, '0')}</span>
+              {s.name}
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+  <script type="application/json" data-stations set:html={JSON.stringify(stations)} />
+</section>
+
+<script>
+  import '../scripts/grounds.js';
+</script>
+
+<style>
+  .grounds {
+    background: linear-gradient(180deg, var(--limewash) 0%, #e9eef0 100%);
+    padding-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .grounds__head {
+    display: grid;
+    gap: 18px;
+    margin-bottom: clamp(28px, 4vw, 56px);
+  }
+  .grounds__head h2 {
+    max-width: 16em;
+  }
+  .grounds__frame {
+    position: relative;
+    width: min(100%, 1600px);
+    margin-inline: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .grounds__frame :global(.grounds-art) {
+    width: 100%;
+    height: 100%;
+  }
+  .grounds__frame :global(.grounds-art__route) {
+    stroke-dasharray: var(--route-len, 2400);
+    stroke-dashoffset: calc(var(--route-len, 2400) * (1 - var(--route, 1)));
+  }
+  .grounds__frame :global([data-st]) {
+    transition: filter var(--t-med) var(--ease-out), opacity var(--t-med);
+  }
+  .grounds__frame[data-active] :global([data-st]) {
+    opacity: 0.9;
+  }
+  .grounds__frame :global([data-st].is-active) {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgb(255 255 255 / 0.95)) drop-shadow(0 0 2px rgb(166 30 54 / 0.6));
+  }
+  .grounds__spots {
+    position: absolute;
+    inset: 0;
+  }
+  .spot {
+    position: absolute;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .spot > span[aria-hidden] {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--night);
+    color: var(--limewash);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-variant-numeric: lining-nums;
+    box-shadow:
+      0 0 0 3px rgb(244 241 234 / 0.9),
+      0 6px 16px -6px rgb(16 26 41 / 0.6);
+    transition:
+      background-color var(--t-med) var(--ease-out),
+      box-shadow var(--t-med) var(--ease-out),
+      scale var(--t-med) var(--ease-out);
+  }
+  .spot:hover > span[aria-hidden] {
+    background: var(--sea);
+    scale: 1.08;
+  }
+  .spot[aria-pressed='true'] > span[aria-hidden] {
+    background: var(--mercy);
+    box-shadow:
+      0 0 0 3px rgb(244 241 234 / 0.95),
+      0 0 0 9px rgb(166 30 54 / 0.22),
+      0 8px 20px -6px rgb(166 30 54 / 0.7);
+  }
+  .spot:focus-visible {
+    border-radius: 50%;
+  }
+  .grounds__below {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: start;
+    position: relative;
+    margin-top: 28px;
+  }
+  .grounds__panel {
+    margin-top: clamp(-148px, -8vw, -60px);
+    display: grid;
+    gap: 12px;
+    padding: clamp(22px, 3vw, 36px);
+    border-radius: 6px;
+    background: var(--limewash);
+    box-shadow:
+      0 30px 60px -36px rgb(16 26 41 / 0.55),
+      0 2px 0 rgb(255 255 255 / 0.8) inset;
+    min-height: 268px;
+  }
+  .grounds__photo {
+    margin: calc(-1 * clamp(22px, 3vw, 36px)) calc(-1 * clamp(22px, 3vw, 36px)) 8px;
+    overflow: hidden;
+    border-radius: 6px 6px 0 0;
+    background: var(--limewash-2);
+  }
+  .grounds__photo[hidden] {
+    display: none;
+  }
+  .grounds__photo img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    animation: photo-in 700ms var(--ease-out);
+  }
+  @keyframes photo-in {
+    from {
+      opacity: 0.2;
+      scale: 1.04;
+    }
+  }
+  .grounds__num {
+    font-size: var(--step-label);
+    font-weight: 500;
+    color: var(--mercy);
+  }
+  .grounds__panel h3 {
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
+  }
+  .grounds__steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 6px;
+  }
+  .grounds__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 20px;
+  }
+  .grounds__list button {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 0;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--night) 10%, transparent);
+    background: none;
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--night);
+    transition: color var(--t-fast);
+  }
+  .grounds__list button span {
+    font-family: var(--font-text);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .grounds__list button:hover,
+  .grounds__list button[aria-pressed='true'] {
+    color: var(--mercy);
+  }
+  .grounds__list button:focus-visible {
+    border-radius: 4px;
+  }
+  @media (max-width: 900px) {
+    .grounds__below {
+      grid-template-columns: 1fr;
+      margin-top: 18px;
+    }
+    .grounds__panel {
+      margin-top: 0;
+    }
+  }
+  /* on phones the markers become a key to the list below; the list is what you tap */
+  @media (max-width: 760px) {
+    .spot {
+      width: 26px;
+      height: 26px;
+      pointer-events: none;
+    }
+    .spot > span[aria-hidden] {
+      width: 20px;
+      height: 20px;
+      font-size: 0.6875rem;
+      box-shadow: 0 0 0 2px rgb(244 241 234 / 0.9);
+    }
+    .grounds__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

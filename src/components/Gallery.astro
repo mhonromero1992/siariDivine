@@ -1,0 +1,225 @@
+---
+/**
+ * The gallery: every photograph of the shrine, opening large in a lightbox.
+ * Renders nothing until photographs exist (src/data/photos.js).
+ */
+import { getImage } from 'astro:assets';
+import { SHRINE_PHOTOS } from '../data/photos.js';
+
+const { id = 'gallery', title = 'The shrine in photographs', intro = '' } = Astro.props;
+
+const items = await Promise.all(
+  SHRINE_PHOTOS.map(async (p) => {
+    const w = p.img.width;
+    const h = p.img.height;
+    const thumb = await getImage({ src: p.img, width: Math.min(720, w), format: 'webp' });
+    const thumb2 = await getImage({ src: p.img, width: Math.min(1100, w), format: 'webp' });
+    const large = await getImage({ src: p.img, width: Math.min(2000, w), format: 'webp' });
+    const ratio = w / h;
+    const shape = ratio > 1.9 ? 'pano' : ratio > 1.15 ? 'wide' : ratio < 0.85 ? 'tall' : 'square';
+    return {
+      id: p.id,
+      alt: p.alt,
+      credit: p.credit,
+      shape,
+      w,
+      h,
+      thumb: thumb.src,
+      srcset: `${thumb.src} ${thumb.attributes.width}w, ${thumb2.src} ${thumb2.attributes.width}w`,
+      large: large.src,
+    };
+  }),
+);
+---
+{items.length > 0 && (
+  <section class="section gallery" id={id} data-tone="light" aria-labelledby={`${id}-title`} data-gallery>
+    <div class="wrap">
+      <div class="gallery__head">
+        <p class="label">{items.length} photographs</p>
+        <h2 id={`${id}-title`}>{title}</h2>
+        {intro && <p class="lead muted">{intro}</p>}
+      </div>
+      <ul class="gallery__grid">
+        {items.map((it, i) => (
+          <li class={`gallery__item is-${it.shape}`}>
+            <button type="button" class="gallery__open" data-index={i} aria-label={`Open photograph ${i + 1} of ${items.length}: ${it.alt}`}>
+              <img src={it.thumb} srcset={it.srcset} sizes="(max-width: 760px) 100vw, 40vw" width={it.w} height={it.h} alt="" loading="lazy" decoding="async" />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <dialog class="lightbox" aria-label="Photograph" data-lightbox>
+      <div class="lightbox__inner">
+        <img class="lightbox__img" alt="" data-lightbox-img />
+        <div class="lightbox__bar">
+          <p class="lightbox__text"><span data-lightbox-alt></span> <span class="lightbox__credit" data-lightbox-credit></span></p>
+          <div class="lightbox__controls">
+            <button class="btn btn--tonal btn--small" type="button" data-lightbox-step="-1">Previous photograph</button>
+            <button class="btn btn--tonal btn--small" type="button" data-lightbox-step="1">Next photograph</button>
+            <button class="btn btn--small" type="button" data-lightbox-close>Close</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+    <script type="application/json" data-gallery-items set:html={JSON.stringify(items.map(({ large, alt, credit, w, h }) => ({ large, alt, credit, w, h })))} />
+  </section>
+)}
+
+<script>
+  document.querySelectorAll('[data-gallery]').forEach((root) => {
+    const items = JSON.parse(root.querySelector('[data-gallery-items]').textContent);
+    const dialog = root.querySelector('[data-lightbox]');
+    const img = root.querySelector('[data-lightbox-img]');
+    const alt = root.querySelector('[data-lightbox-alt]');
+    const credit = root.querySelector('[data-lightbox-credit]');
+    let index = 0;
+    let opener = null;
+    const show = (i) => {
+      index = (i + items.length) % items.length;
+      const it = items[index];
+      img.src = it.large;
+      img.width = it.w;
+      img.height = it.h;
+      img.alt = it.alt;
+      alt.textContent = `${index + 1} / ${items.length}. ${it.alt}`;
+      credit.textContent = it.credit ? `Photograph: ${it.credit}.` : '';
+    };
+    root.querySelectorAll('[data-index]').forEach((b) =>
+      b.addEventListener('click', () => {
+        opener = b;
+        show(Number(b.dataset.index));
+        dialog.showModal();
+      }),
+    );
+    root.querySelectorAll('[data-lightbox-step]').forEach((b) => b.addEventListener('click', () => show(index + Number(b.dataset.lightboxStep))));
+    root.querySelector('[data-lightbox-close]').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => e.target === dialog && dialog.close());
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') show(index + 1);
+      if (e.key === 'ArrowLeft') show(index - 1);
+    });
+    dialog.addEventListener('close', () => opener?.focus());
+  });
+</script>
+
+<style>
+  .gallery__head {
+    display: grid;
+    gap: 16px;
+    margin-bottom: clamp(28px, 4vw, 52px);
+  }
+  .gallery__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: clamp(120px, 11vw, 168px);
+    grid-auto-flow: dense;
+    gap: clamp(10px, 1.4vw, 20px);
+  }
+  .gallery__item {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .gallery__item.is-wide {
+    grid-column: span 3;
+  }
+  .gallery__item.is-pano {
+    grid-column: span 4;
+    grid-row: span 1;
+  }
+  .gallery__item.is-tall {
+    grid-column: span 2;
+    grid-row: span 3;
+  }
+  .gallery__open {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-frame);
+    overflow: hidden;
+    background: var(--limewash-2);
+  }
+  .gallery__open img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 700ms var(--ease-out), filter 400ms;
+  }
+  .gallery__open:hover img {
+    scale: 1.03;
+  }
+  .gallery__open:focus-visible {
+    border-radius: var(--r-frame);
+  }
+  .lightbox {
+    width: min(100% - 24px, 1280px);
+    max-height: 94vh;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: var(--night);
+    color: var(--limewash);
+    box-shadow: var(--shadow-dialog);
+  }
+  .lightbox::backdrop {
+    background: rgb(8 15 27 / 0.86);
+  }
+  .lightbox__inner {
+    display: grid;
+  }
+  .lightbox__img {
+    width: 100%;
+    height: auto;
+    max-height: calc(94vh - 120px);
+    object-fit: contain;
+    background: #0a1322;
+  }
+  .lightbox__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    padding: 14px 18px;
+  }
+  .lightbox__text {
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    color: #d5dbe4;
+  }
+  .lightbox__credit {
+    color: var(--on-night-muted);
+  }
+  .lightbox__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .lightbox .btn--tonal {
+    --btn-bg: rgb(244 241 234 / 0.1);
+    --btn-bg-hover: rgb(244 241 234 / 0.18);
+    --btn-ink: var(--limewash);
+  }
+  @media (max-width: 760px) {
+    .gallery__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 42vw;
+    }
+    .gallery__item,
+    .gallery__item.is-wide,
+    .gallery__item.is-tall {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    .gallery__item.is-pano,
+    .gallery__item.is-wide:nth-child(3n) {
+      grid-column: span 2;
+    }
+  }
+</style>

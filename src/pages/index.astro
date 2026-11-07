@@ -1,8 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import VisitBlock from '../components/VisitBlock.astro';
+import TwoRays from '../components/TwoRays.astro';
+import Grounds from '../components/Grounds.astro';
+import HourBand from '../components/HourBand.astro';
+import Feasts from '../components/Feasts.astro';
+import PhotoChapters from '../components/PhotoChapters.astro';
 ---
-<Base title="" description="The Diocesan Shrine of the Divine Mercy on Siari Hills, Sindangan, Zamboanga del Norte: a hilltop chapel above the Sulu Sea." current="/" navTone="dark" page="home">
+<Base
+  description="The Diocesan Shrine of the Divine Mercy on Siari Hills, Sindangan, Zamboanga del Norte: a whitewashed hilltop chapel and a great statue of the Divine Mercy above the Sulu Sea. Admission is free."
+  current="/"
+  navTone="dark"
+  page="home"
+>
   <Hero />
-  <section class="section" data-tone="light" style="min-height:60vh"><div class="wrap"><h2>Probe</h2></div></section>
+  <VisitBlock />
+  <TwoRays />
+  <Grounds />
+  <PhotoChapters />
+  <HourBand />
+  <Feasts />
 </Base>

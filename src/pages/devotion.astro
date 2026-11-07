@@ -1,0 +1,207 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Photo from '../components/Photo.astro';
+import TwoRays from '../components/TwoRays.astro';
+import Chaplet from '../components/Chaplet.astro';
+import { PHOTOS } from '../data/credits.js';
+import { shrinePhoto } from '../data/photos.js';
+import { upcomingFeasts, formatLong, isoDate } from '../scripts/liturgical.js';
+
+const feasts = upcomingFeasts(14);
+const goodFriday = feasts.find((f) => f.id === 'good-friday');
+const dms = feasts.find((f) => f.id === 'divine-mercy-sunday');
+const faustinaPortrait = PHOTOS['faustina-1931'];
+const hasNiche = !!shrinePhoto('faustina');
+const hasDusk = !!shrinePhoto('chapel-dusk');
+
+const NOVENA = [
+  'All mankind, especially sinners',
+  'The souls of priests and religious',
+  'All devout and faithful souls',
+  'Those who do not believe in God, and those who do not yet know Jesus',
+  'The souls of separated brethren',
+  'The meek and humble souls, and the souls of little children',
+  'The souls who especially venerate and glorify the mercy of Jesus',
+  'The souls detained in purgatory',
+  'The souls who have become lukewarm',
+];
+---
+<Base
+  title="Divine Mercy"
+  description="The devotion to the Divine Mercy: the image and its two rays, St. Faustina Kowalska, the Chaplet with a bead-by-bead guide, the Hour of Mercy, the Novena and Divine Mercy Sunday."
+  current="/devotion"
+  navTone="dark"
+  page="devotion"
+>
+  <PageHead
+    tone="dark"
+    crumb="Divine Mercy"
+    kicker="The devotion at the heart of the shrine"
+    title="The Divine Mercy: <em>Jesus, I trust in You</em>"
+    lead="The image, the Chaplet, the Hour of Mercy at three o’clock and Divine Mercy Sunday: the prayers pilgrims bring up Siari Hills."
+  >
+    {hasDusk && (
+      <div slot="art" class="devo-head__art">
+        <Photo id="chapel-dusk" sizes="(max-width: 900px) 100vw, 40vw" widths={[600, 900, 1300]} loading="eager" fetchpriority="high" position="62% 50%" />
+      </div>
+    )}
+  </PageHead>
+
+  <TwoRays more={false} />
+
+  <section class="section faustina limewash" data-tone="light" aria-labelledby="faustina-title">
+    <div class="wrap faustina__grid">
+      <div class="faustina__text">
+        <p class="label">The Apostle of Divine Mercy</p>
+        <h2 id="faustina-title">St. Faustina <em>Kowalska</em></h2>
+        <p>Helena Kowalska was born in 1905 in Głogowiec, Poland, the third of ten children. As Sister Maria Faustina of the Congregation of the Sisters of Our Lady of Mercy, she kept a diary of what Jesus asked of her. It is published as <cite>Divine Mercy in My Soul</cite>.</p>
+        <p>She died in Kraków on 5 October 1938, at thirty-three. Pope John Paul II canonized her on 30 April 2000 and, on the same day, gave the Second Sunday of Easter to the whole Church as Divine Mercy Sunday.</p>
+        <p class="muted">At Siari, her portrait has its own outdoor shrine on the flank of the chapel, with a box for written prayers.</p>
+      </div>
+      {(faustinaPortrait || hasNiche) && (
+        <div class="faustina__photo">
+          {faustinaPortrait ? (
+            <img src={faustinaPortrait.src} alt={faustinaPortrait.alt} width="960" height="1549" loading="lazy" decoding="async" />
+          ) : (
+            <Photo id="faustina" sizes="(max-width: 900px) 100vw, 34vw" widths={[450, 900]} />
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <Chaplet />
+
+  <section class="section novena" data-tone="light" aria-labelledby="novena-title">
+    <div class="wrap novena__grid">
+      <div class="novena__head">
+        <p class="label">Nine days before the feast</p>
+        <h2 id="novena-title">The Novena and <em>Divine Mercy Sunday</em></h2>
+        <p class="muted">The Novena to the Divine Mercy begins on Good Friday and ends on the Saturday after Easter. Each day carries its own intention, given in St. Faustina’s Diary. Its ninth day is the eve of Divine Mercy Sunday.</p>
+        <dl class="novena__dates">
+          {goodFriday && (
+            <div>
+              <dt>The Novena begins</dt>
+              <dd><time datetime={isoDate(goodFriday.date)}>{formatLong(goodFriday.date)}</time></dd>
+            </div>
+          )}
+          {dms && (
+            <div>
+              <dt>Divine Mercy Sunday</dt>
+              <dd><time datetime={isoDate(dms.date)}>{formatLong(dms.date)}</time></dd>
+            </div>
+          )}
+        </dl>
+      </div>
+      <ol class="novena__days">
+        {NOVENA.map((intention, i) => (
+          <li>
+            <span class="novena__n numerals">Day {i + 1}</span>
+            <span class="novena__i">{intention}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .devo-head__art {
+    overflow: hidden;
+    border-radius: var(--r-frame);
+  }
+  .devo-head__art :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .faustina__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: center;
+  }
+  .faustina__text {
+    display: grid;
+    gap: 16px;
+    max-width: 40em;
+  }
+  .faustina__text h2 {
+    margin-bottom: 6px;
+  }
+  .faustina__photo :global(img),
+  .faustina__photo > img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--r-frame);
+  }
+  .novena__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .novena__head {
+    display: grid;
+    gap: 18px;
+    position: sticky;
+    top: calc(var(--nav-h) + 40px);
+  }
+  .novena__dates {
+    margin: 6px 0 0;
+    display: grid;
+    gap: 14px;
+  }
+  .novena__dates dt {
+    font-size: var(--step-label);
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .novena__dates dd {
+    margin: 2px 0 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--mercy);
+    font-variant-numeric: lining-nums;
+  }
+  .novena__days {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .novena__days li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-top: 1px solid color-mix(in srgb, var(--night) 12%, transparent);
+  }
+  .novena__days li:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--night) 12%, transparent);
+  }
+  .novena__n {
+    font-size: var(--step-small);
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .novena__i {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+    line-height: 1.3;
+  }
+  @media (max-width: 900px) {
+    .faustina__grid,
+    .novena__grid {
+      grid-template-columns: 1fr;
+    }
+    .novena__head {
+      position: static;
+    }
+    .faustina__photo {
+      max-width: 420px;
+    }
+  }
+</style>

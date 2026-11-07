@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { NAV } from '../data/site.js';
+---
+<Base title="Page not found" description="This page is not on the site of the Divine Mercy Shrine, Siari Hills." navTone="light" page="404">
+  <PageHead crumb="Page not found" kicker="Error 404" title="This page is <em>not here</em>" lead="The address may be old or mistyped. These pages are:">
+    <div slot="actions" class="nf__links">
+      <a class="btn" href="/">Go to the home page</a>
+      {NAV.map((n) => <a class="btn btn--tonal" href={n.href}>{n.label}</a>)}
+    </div>
+  </PageHead>
+</Base>
+
+<style>
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

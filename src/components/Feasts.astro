@@ -1,0 +1,123 @@
+---
+import { upcomingFeasts, formatDay, formatMonth, formatWeekday, formatYear, isoDate } from '../scripts/liturgical.js';
+import { LINKS } from '../data/site.js';
+
+const { count = 6, id = 'feasts', heading = 'Feasts in the coming months' } = Astro.props;
+const feasts = upcomingFeasts(count);
+---
+<section class="section feasts" id={id} data-tone="light" aria-labelledby={`${id}-title`}>
+  <div class="wrap feasts__grid">
+    <div class="feasts__head">
+      <p class="label">The year at the shrine</p>
+      <h2 id={`${id}-title`}>{heading}</h2>
+      <p class="muted">Divine Mercy Sunday, the Second Sunday of Easter, is the shrine’s own feast. Its Novena begins on Good Friday. Dates are worked out from the date of Easter each year.</p>
+      <p class="muted">Mass times for feast days are posted on the <a class="link" href={LINKS.facebook} target="_blank" rel="noopener">shrine’s Facebook page</a>.</p>
+    </div>
+    <ol class="ledger" data-ledger data-count={count}>
+      {feasts.map((f) => (
+        <li class={f.major ? 'is-major' : ''}>
+          <time datetime={isoDate(f.date)} class="ledger__date">
+            <span class="ledger__day">{formatDay(f.date)}</span>
+            <span class="ledger__month">{formatMonth(f.date)} {formatYear(f.date)}</span>
+          </time>
+          <div class="ledger__what">
+            <p class="ledger__name">{f.name}</p>
+            <p class="ledger__note">{formatWeekday(f.date)}. {f.note}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  import { upcomingFeasts, formatDay, formatMonth, formatWeekday, formatYear, isoDate } from '../scripts/liturgical.js';
+  /* the page may be older than today: recompute on the visitor's device */
+  document.querySelectorAll('[data-ledger]').forEach((ol) => {
+    const first = ol.querySelector('time')?.getAttribute('datetime');
+    const fresh = upcomingFeasts(Number(ol.dataset.count) || 6);
+    if (!fresh.length || first === isoDate(fresh[0].date)) return;
+    ol.innerHTML = '';
+    for (const f of fresh) {
+      const li = document.createElement('li');
+      if (f.major) li.className = 'is-major';
+      li.innerHTML = `<time class="ledger__date" datetime="${isoDate(f.date)}"><span class="ledger__day">${formatDay(f.date)}</span><span class="ledger__month">${formatMonth(f.date)} ${formatYear(f.date)}</span></time><div class="ledger__what"><p class="ledger__name"></p><p class="ledger__note"></p></div>`;
+      li.querySelector('.ledger__name').textContent = f.name;
+      li.querySelector('.ledger__note').textContent = `${formatWeekday(f.date)}. ${f.note}`;
+      ol.append(li);
+    }
+  });
+</script>
+
+<style>
+  .feasts__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .feasts__head {
+    display: grid;
+    gap: 18px;
+    position: sticky;
+    top: calc(var(--nav-h) + 40px);
+  }
+  .ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ledger li {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: 24px;
+    padding: 22px 0;
+    border-top: 1px solid color-mix(in srgb, var(--night) 12%, transparent);
+  }
+  .ledger li:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--night) 12%, transparent);
+  }
+  .ledger__date {
+    display: grid;
+    align-content: start;
+  }
+  .ledger__day {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+    line-height: 0.9;
+    font-variant-numeric: lining-nums;
+  }
+  .ledger__month {
+    margin-top: 6px;
+    font-size: var(--step-small);
+    color: var(--muted);
+    font-variant-numeric: lining-nums;
+  }
+  .ledger__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.2rem + 0.7vw, 1.8rem);
+    line-height: 1.15;
+  }
+  .ledger__note {
+    margin-top: 6px;
+    color: var(--muted);
+  }
+  .ledger .is-major .ledger__day,
+  .ledger .is-major .ledger__name {
+    color: var(--mercy);
+  }
+  @media (max-width: 900px) {
+    .feasts__grid {
+      grid-template-columns: 1fr;
+    }
+    .feasts__head {
+      position: static;
+    }
+  }
+  @media (max-width: 520px) {
+    .ledger li {
+      grid-template-columns: 5.5rem 1fr;
+      gap: 14px;
+    }
+  }
+</style>

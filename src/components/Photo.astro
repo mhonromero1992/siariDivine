@@ -1,0 +1,39 @@
+---
+/**
+ * A photograph of the shrine by slot id (src/data/photos.js). When the slot has no file yet,
+ * whatever is passed inside the component (a drawing) is shown instead.
+ */
+import { Picture } from 'astro:assets';
+import { shrinePhoto } from '../data/photos.js';
+
+const {
+  id,
+  widths = [480, 800, 1200, 1600],
+  sizes = '100vw',
+  class: className,
+  loading = 'lazy',
+  fetchpriority,
+  position = 'center',
+} = Astro.props;
+
+const p = shrinePhoto(id);
+const usable = p ? widths.filter((w) => w <= p.img.width) : [];
+const finalWidths = p ? (usable.length ? usable : [p.img.width]) : [];
+---
+{p ? (
+  <Picture
+    src={p.img}
+    alt={p.alt}
+    widths={finalWidths}
+    sizes={sizes}
+    formats={['avif', 'webp']}
+    class={className}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding="async"
+    style={`object-position:${position}`}
+    data-photo={id}
+  />
+) : (
+  <slot />
+)}

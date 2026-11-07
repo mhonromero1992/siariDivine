@@ -1,0 +1,105 @@
+---
+/**
+ * The shrine in photographs on the home page: one photograph across the screen, then a strip of
+ * details. Shows only when the shrine's photographs are in place (src/data/photos.js).
+ */
+import Photo from './Photo.astro';
+import { shrinePhoto } from '../data/photos.js';
+
+const lead = shrinePhoto('interior-dusk') ? 'interior-dusk' : shrinePhoto('interior') ? 'interior' : null;
+const strip = ['our-lady', 'tower', 'faustina', 'gethsemane'].filter((id) => shrinePhoto(id));
+---
+{lead && (
+  <section class="section chapters" data-tone="light" aria-labelledby="chapters-title">
+    <div class="wrap chapters__head">
+      <div>
+        <p class="label">The shrine in photographs</p>
+        <h2 id="chapters-title">The chapel, <em>open to the sea</em></h2>
+      </div>
+      <div class="chapters__side">
+        <p class="muted">Clear glass walls run behind the altar, so the Sulu Sea is part of every Mass. Stained glass runs above them.</p>
+        <a class="link" href="/shrine#gallery">See all the photographs</a>
+      </div>
+    </div>
+    <a class="chapters__bleed" href="/shrine#gallery" aria-label="See all the photographs of the shrine">
+      <Photo id={lead} sizes="100vw" widths={[800, 1200, 1600, 2000]} position="50% 58%" />
+    </a>
+    {strip.length >= 2 && (
+      <ul class="wrap chapters__strip">
+        {strip.map((id) => (
+          <li>
+            <a href="/shrine#gallery" aria-label="See all the photographs of the shrine">
+              <Photo id={id} sizes="(max-width: 760px) 46vw, 22vw" widths={[320, 640]} position="50% 35%" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+)}
+
+<style>
+  .chapters__head {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(20px, 4vw, 72px);
+    align-items: end;
+    margin-bottom: clamp(28px, 4vw, 52px);
+  }
+  .chapters__head h2 {
+    margin-top: 14px;
+  }
+  .chapters__side {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+  }
+  .chapters__bleed {
+    display: block;
+    overflow: hidden;
+  }
+  .chapters__bleed :global(img) {
+    width: 100%;
+    height: clamp(320px, 42vw, 640px);
+    object-fit: cover;
+    transition: scale 1200ms var(--ease-out);
+  }
+  .chapters__bleed:hover :global(img) {
+    scale: 1.02;
+  }
+  .chapters__bleed:focus-visible {
+    border-radius: 0;
+  }
+  .chapters__strip {
+    list-style: none;
+    margin-top: clamp(12px, 1.6vw, 24px);
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(12px, 1.6vw, 24px);
+  }
+  .chapters__strip a {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--r-frame);
+  }
+  .chapters__strip :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: scale 800ms var(--ease-out);
+  }
+  .chapters__strip a:hover :global(img) {
+    scale: 1.03;
+  }
+  @media (max-width: 900px) {
+    .chapters__head {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 760px) {
+    .chapters__strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

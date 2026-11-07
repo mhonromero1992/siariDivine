@@ -44,7 +44,7 @@
   --s-10: 8rem;
   --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
   --wrap: 1240px;
-  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --section-y: clamp(4.25rem, 3rem + 4.4vw, 7.5rem);
 
   /* Shape */
   --r-frame: 2px;

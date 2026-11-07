@@ -1,0 +1,191 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ComposeForm from '../components/ComposeForm.astro';
+import { LINKS, SHRINE } from '../data/site.js';
+
+const CONCERNS = [
+  { name: 'Mass intentions', text: 'Offer a Mass for the living or the dead.', href: '/sacraments#intentions', action: 'Send a prayer intention' },
+  { name: 'Group pilgrimages', text: 'Parishes, schools and families planning a visit.', href: '/visit#groups', action: 'Plan a group pilgrimage' },
+  { name: 'Baptisms and weddings', text: 'What to prepare and how to book a date.', href: '/sacraments#sacraments', action: 'See what to prepare' },
+  { name: 'Mass times', text: 'This week’s schedule, feasts and Holy Week.', href: LINKS.facebook, action: 'See this week’s Mass times', external: true },
+];
+---
+<Base
+  title="Contact"
+  description="Write to the office of the Divine Mercy Shrine on Siari Hills, Sindangan: Mass intentions, group pilgrimages, baptisms and weddings, offerings. Address and directions."
+  current="/contact"
+  navTone="light"
+  page="contact"
+>
+  <PageHead
+    crumb="Contact"
+    kicker="The shrine office"
+    title="Write to the <em>shrine office</em>"
+    lead="The shrine answers through its Facebook page. Choose what your message is about, or write it here: the form opens Messenger with your words ready to send."
+  />
+
+  <section class="section concerns" data-tone="light" aria-labelledby="concerns-title">
+    <div class="wrap">
+      <h2 id="concerns-title" class="concerns__title">What is your message about?</h2>
+      <ul class="concerns__list">
+        {CONCERNS.map((c) => (
+          <li>
+            <h3>{c.name}</h3>
+            <p class="muted">{c.text}</p>
+            <a class="link" href={c.href} target={c.external ? '_blank' : undefined} rel={c.external ? 'noopener' : undefined}>{c.action}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section message limewash" id="message" data-tone="light" aria-labelledby="message-title">
+    <div class="wrap message__grid">
+      <div class="message__head">
+        <p class="label">Anything else</p>
+        <h2 id="message-title">A message to <em>the office</em></h2>
+        <p class="muted">Questions about the shrine, offerings, its history or a lost item. Include how the office can reach you.</p>
+      </div>
+      <ComposeForm id="contact-form" subject="Message to the shrine office" submitLabel="Prepare the message">
+        <div class="form__row">
+          <div class="field" data-required="Write your name.">
+            <label for="c-name">Your name</label>
+            <input id="c-name" name="name" type="text" autocomplete="name" aria-describedby="c-name-err" />
+            <p class="field__error" id="c-name-err"></p>
+          </div>
+          <div class="field" data-required="Write a mobile number or email the office can reply to.">
+            <label for="c-contact">Mobile number or email</label>
+            <input id="c-contact" name="contact" type="text" aria-describedby="c-contact-err" />
+            <p class="field__error" id="c-contact-err"></p>
+          </div>
+        </div>
+        <div class="field" data-required="Choose what your message is about.">
+          <label for="c-topic">About</label>
+          <select id="c-topic" name="topic" aria-describedby="c-topic-err">
+            <option value="">Choose one</option>
+            <option>A question about visiting</option>
+            <option>Offerings and donations</option>
+            <option>The shrine’s history and photographs</option>
+            <option>Something else</option>
+          </select>
+          <p class="field__error" id="c-topic-err"></p>
+        </div>
+        <div class="field" data-required="Write your message.">
+          <label for="c-message">Message</label>
+          <textarea id="c-message" name="message" rows="6" aria-describedby="c-message-err"></textarea>
+          <p class="field__error" id="c-message-err"></p>
+        </div>
+      </ComposeForm>
+    </div>
+  </section>
+
+  <section class="section find on-night" data-tone="dark" aria-labelledby="find-title">
+    <div class="wrap find__grid">
+      <div>
+        <p class="label">On the grounds</p>
+        <h2 id="find-title">The shrine office</h2>
+        <p class="find__lead">The office is on the shrine grounds, beside the candle gallery and the souvenir shop. Offerings for the shrine are received there.</p>
+      </div>
+      <div class="find__card">
+        <address>
+          {SHRINE.name}<br />
+          {SHRINE.hill}, {SHRINE.barangay}<br />
+          Regional Highway, {SHRINE.town}<br />
+          {SHRINE.province}
+        </address>
+        <div class="find__actions">
+          <a class="btn" href={LINKS.maps} target="_blank" rel="noopener">Get directions</a>
+          <a class="btn btn--tonal" href={LINKS.facebook} target="_blank" rel="noopener">Follow the shrine on Facebook</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .concerns__title {
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
+    margin-bottom: clamp(20px, 3vw, 36px);
+  }
+  .concerns__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 clamp(18px, 3vw, 40px);
+  }
+  .concerns__list li {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 22px 0;
+    border-top: 2px solid var(--night);
+  }
+  .concerns__list li:nth-child(1) {
+    border-top-color: var(--mercy);
+  }
+  .concerns__list h3 {
+    font-size: 1.5rem;
+  }
+  .concerns__list .link {
+    justify-self: start;
+    margin-top: 4px;
+  }
+  .message__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .message__head {
+    display: grid;
+    gap: 16px;
+  }
+  .find__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: end;
+  }
+  .find__grid h2 {
+    margin-top: 14px;
+  }
+  .find__lead {
+    margin-top: 16px;
+    color: #d5dbe4;
+    max-width: 32em;
+  }
+  .find__card {
+    display: grid;
+    gap: 22px;
+  }
+  address {
+    font-style: normal;
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem);
+    line-height: 1.35;
+  }
+  .find__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  @media (max-width: 1000px) {
+    .concerns__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 900px) {
+    .message__grid,
+    .find__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .concerns__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

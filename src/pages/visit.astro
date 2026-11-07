@@ -1,0 +1,221 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Photo from '../components/Photo.astro';
+import VisitBlock from '../components/VisitBlock.astro';
+import ComposeForm from '../components/ComposeForm.astro';
+import { LINKS, DRESS_CODE, HEALING_WALK_SIGN, FACILITIES } from '../data/site.js';
+import { shrinePhoto } from '../data/photos.js';
+
+const hasWalk = !!shrinePhoto('walk-of-faith');
+const FAQ = [
+  { q: 'Is there an entrance fee?', a: 'No. Admission to the shrine is free.' },
+  { q: 'What should I wear?', a: DRESS_CODE.rule },
+  { q: 'How do I get there by bus or van?', a: 'Take any bus or van on the Regional Highway between Dipolog and Ipil or Zamboanga City and get off at the Divine Mercy arch in Siari. From the arch, climb the stairs or ride a habal-habal up the hill.' },
+  { q: 'Can I drive up to the shrine?', a: 'Yes. A road climbs the hill from the highway to the shrine grounds.' },
+  { q: 'Do I have to take off my shoes?', a: 'Only on the Healing Walk, where the sign asks pilgrims to keep silence and walk without footwear.' },
+  { q: 'Where can I leave a written prayer?', a: 'At the two outdoor shrines on the flanks of the chapel, one to the Divine Mercy and one to St. Faustina. Each has a box for petitions.' },
+  { q: 'Where can I light a candle?', a: 'In the candle gallery on the shrine grounds.' },
+  { q: 'When are the Masses?', a: 'The shrine posts the current Mass schedule on its Facebook page, including the changes for Holy Week and Divine Mercy Sunday.' },
+];
+---
+<Base
+  title="Visit"
+  description="How to reach the Divine Mercy Shrine on Siari Hills, Sindangan: by bus, van, habal-habal or car on the Regional Highway; what to wear; the Healing Walk; group pilgrimages; questions pilgrims ask."
+  current="/visit"
+  navTone="light"
+  page="visit"
+>
+  <PageHead
+    crumb="Visit"
+    kicker="Plan your visit"
+    title="Visiting the shrine on <em>Siari Hills</em>"
+    lead="The shrine stands above the Regional Highway between Dipolog and Sindangan. Admission is free; dress for church, and leave time for the view from the roof deck."
+  >
+    <a slot="actions" class="btn" href={LINKS.maps} target="_blank" rel="noopener" data-magnetic data-dock-hide>Get directions</a>
+    {hasWalk && (
+      <div slot="art" class="visit-head__art">
+        <Photo id="walk-of-faith" sizes="(max-width: 900px) 100vw, 36vw" widths={[500, 900, 1300]} loading="eager" fetchpriority="high" position="50% 45%" />
+      </div>
+    )}
+  </PageHead>
+
+  <VisitBlock guideLink={false} />
+
+  <section class="section ground on-night" data-tone="dark" aria-labelledby="ground-title">
+    <div class="wrap ground__grid">
+      <div class="ground__text">
+        <p class="label">Shrine etiquette</p>
+        <h2 id="ground-title">On <em>holy ground</em></h2>
+        <blockquote class="ground__quote">
+          <p>{HEALING_WALK_SIGN.text}</p>
+          <cite>{HEALING_WALK_SIGN.ref}, on the sign at the Healing Walk</cite>
+        </blockquote>
+      </div>
+      <ul class="ground__rules">
+        <li><strong>Dress for church.</strong> {DRESS_CODE.rule}</li>
+        <li><strong>Silence on the Healing Walk.</strong> Take off your footwear before you enter, and keep silence along the path.</li>
+        <li><strong>Written prayers.</strong> Leave them in the petition boxes at the shrines of the Divine Mercy and of St. Faustina.</li>
+        {FACILITIES.map((f) => (
+          <li><strong>{f.name}.</strong> {f.text}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section groups" id="groups" data-tone="light" aria-labelledby="groups-title">
+    <div class="wrap groups__grid">
+      <div class="groups__head">
+        <p class="label">Parishes, schools and families</p>
+        <h2 id="groups-title">Plan a <em>group pilgrimage</em></h2>
+        <p class="muted">Tell the shrine office when you are coming and what your group hopes for. The form writes your request and sends it to the shrine’s Messenger.</p>
+      </div>
+      <ComposeForm id="group-form" subject="Group pilgrimage request" submitLabel="Prepare the request">
+        <div class="form__row">
+          <div class="field" data-required="Write the name of your group or parish.">
+            <label for="g-group">Group or parish</label>
+            <input id="g-group" name="group" type="text" autocomplete="organization" aria-describedby="g-group-err" />
+            <p class="field__error" id="g-group-err"></p>
+          </div>
+          <div class="field" data-required="Write the name of the person leading the group.">
+            <label for="g-leader">Group leader</label>
+            <input id="g-leader" name="leader" type="text" autocomplete="name" aria-describedby="g-leader-err" />
+            <p class="field__error" id="g-leader-err"></p>
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field" data-required="Choose the day you plan to come.">
+            <label for="g-date">Day of the visit</label>
+            <input id="g-date" name="date" type="date" aria-describedby="g-date-err" />
+            <p class="field__error" id="g-date-err"></p>
+          </div>
+          <div class="field" data-required="Write how many people are coming.">
+            <label for="g-size">Number of pilgrims</label>
+            <input id="g-size" name="size" type="number" min="1" inputmode="numeric" aria-describedby="g-size-err" />
+            <p class="field__error" id="g-size-err"></p>
+          </div>
+          <div class="field" data-required="Write a mobile number or email the office can reply to.">
+            <label for="g-contact">Mobile number or email</label>
+            <input id="g-contact" name="contact" type="text" autocomplete="tel" aria-describedby="g-contact-err" />
+            <p class="field__error" id="g-contact-err"></p>
+          </div>
+        </div>
+        <fieldset class="field choices">
+          <legend>What your group hopes for (optional)</legend>
+          <label class="choice"><input type="checkbox" name="hopes" value="Holy Mass" /><span>Holy Mass</span></label>
+          <label class="choice"><input type="checkbox" name="hopes" value="Confession" /><span>Confession</span></label>
+          <label class="choice"><input type="checkbox" name="hopes" value="The Chaplet at three o’clock" /><span>The Chaplet at three o’clock</span></label>
+          <label class="choice"><input type="checkbox" name="hopes" value="The Healing Walk" /><span>The Healing Walk</span></label>
+          <label class="choice"><input type="checkbox" name="hopes" value="A quiet visit" /><span>A quiet visit</span></label>
+        </fieldset>
+        <div class="field">
+          <label for="g-notes">Anything the office should know (optional)</label>
+          <textarea id="g-notes" name="notes" rows="4"></textarea>
+        </div>
+      </ComposeForm>
+    </div>
+  </section>
+
+  <section class="section faq limewash" id="questions" data-tone="light" aria-labelledby="faq-title">
+    <div class="wrap faq__grid">
+      <div class="faq__head">
+        <p class="label">Before you set out</p>
+        <h2 id="faq-title">Questions pilgrims ask</h2>
+      </div>
+      <div class="faq__list">
+        {FAQ.map((item) => (
+          <details class="qa">
+            <summary>{item.q}</summary>
+            <p class="qa__body">
+              {item.a}
+              {item.q === 'When are the Masses?' && (
+                <> <a class="link" href={LINKS.facebook} target="_blank" rel="noopener">See the shrine’s Facebook page</a>.</>
+              )}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .visit-head__art {
+    overflow: hidden;
+    border-radius: var(--r-frame);
+  }
+  .visit-head__art :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    max-height: 560px;
+    object-fit: cover;
+  }
+  .ground {
+    background:
+      radial-gradient(700px 420px at 12% 30%, rgb(169 212 238 / 0.12), transparent 70%),
+      var(--night);
+  }
+  .ground__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .ground__text {
+    display: grid;
+    gap: 22px;
+  }
+  .ground__text h2 em {
+    color: var(--pale);
+  }
+  .ground__quote {
+    margin: 0;
+  }
+  .ground__quote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.3rem);
+    line-height: 1.22;
+    color: #ffd9df;
+  }
+  .ground__quote cite {
+    display: block;
+    margin-top: 10px;
+    font-style: normal;
+    font-size: var(--step-small);
+    color: var(--on-night-muted);
+  }
+  .ground__rules {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ground__rules li {
+    padding: 16px 0;
+    border-top: 1px solid rgb(244 241 234 / 0.1);
+    color: #d5dbe4;
+  }
+  .ground__rules strong {
+    color: var(--limewash);
+    font-weight: 500;
+  }
+  .groups__grid,
+  .faq__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(28px, 6vw, 100px);
+    align-items: start;
+  }
+  .groups__head,
+  .faq__head {
+    display: grid;
+    gap: 18px;
+  }
+  @media (max-width: 900px) {
+    .ground__grid,
+    .groups__grid,
+    .faq__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

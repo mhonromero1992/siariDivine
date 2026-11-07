@@ -1,0 +1,96 @@
+---
+/**
+ * A form that delivers to the shrine: it posts to FORM_ENDPOINT when one is set, otherwise it
+ * writes the message, copies it and opens the shrine's Messenger (src/scripts/forms.js).
+ */
+import { LINKS, FORM_ENDPOINT } from '../data/site.js';
+const { id, subject, submitLabel, sent = 'Thank you. Your message has been sent to the shrine office.' } = Astro.props;
+---
+<div class="compose">
+  <form class="form" id={id} data-compose data-subject={subject} data-sent={sent} data-endpoint={FORM_ENDPOINT || undefined} novalidate>
+    <slot />
+    <div class="compose__submit">
+      <button class="btn" type="submit">
+        <span>{submitLabel}</span>
+        <span class="btn__spinner" aria-hidden="true"></span>
+      </button>
+      <p class="form__status" data-status role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div class="compose__ready" data-ready hidden>
+    <h3 tabindex="-1">Your message is ready</h3>
+    <p data-ready-note></p>
+    <label class="visually-hidden" for={`${id}-text`}>Your message</label>
+    <textarea id={`${id}-text`} readonly rows="7" data-ready-text></textarea>
+    <div class="compose__actions">
+      <a class="btn" href={LINKS.messenger} target="_blank" rel="noopener">Open Messenger</a>
+      <button class="btn btn--tonal" type="button" data-copy-again>Copy the message again</button>
+    </div>
+    <p class="muted compose__fallback">
+      No Messenger? Send the same words on the shrine’s <a class="link" href={LINKS.facebook} target="_blank" rel="noopener">Facebook page</a>,
+      or bring them to the shrine office.
+    </p>
+  </div>
+</div>
+
+<script>
+  import '../scripts/forms.js';
+</script>
+
+<style>
+  .compose {
+    display: grid;
+    gap: 24px;
+  }
+  .compose__submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 20px;
+  }
+  .compose__ready {
+    display: grid;
+    gap: 14px;
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: 8px;
+    background: var(--night);
+    color: var(--limewash);
+  }
+  .compose__ready h3 {
+    font-size: 1.6rem;
+  }
+  .compose__ready h3:focus-visible {
+    box-shadow: none;
+    text-decoration: underline;
+    text-decoration-color: var(--pale);
+  }
+  .compose__ready textarea {
+    width: 100%;
+    padding: 14px;
+    border: 0;
+    border-radius: var(--r-control);
+    background: rgb(244 241 234 / 0.08);
+    color: var(--limewash);
+    font-family: var(--font-text);
+    line-height: 1.5;
+    resize: vertical;
+  }
+  .compose__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .compose__ready .btn--tonal {
+    --btn-bg: rgb(244 241 234 / 0.1);
+    --btn-bg-hover: rgb(244 241 234 / 0.18);
+    --btn-ink: var(--limewash);
+  }
+  .compose__fallback {
+    font-size: 0.9375rem;
+    color: var(--on-night-muted);
+  }
+  .compose__fallback .link {
+    color: var(--pale);
+  }
+</style>

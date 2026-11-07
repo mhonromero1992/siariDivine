@@ -1,0 +1,218 @@
+---
+import { PHOTOS } from '../data/credits.js';
+import Photo from './Photo.astro';
+import { shrinePhoto } from '../data/photos.js';
+const image = PHOTOS['divine-mercy-1934'];
+const statue = !image && shrinePhoto('statue');
+const { more = true } = Astro.props;
+---
+<section class="section rays" data-tone="light" aria-labelledby="rays-title" data-moment="rays">
+  <div class="wrap rays__grid">
+    <figure class="rays__art">
+      {image ? (
+        <img src={image.src} width="640" height="1080" alt={image.alt} loading="lazy" decoding="async" />
+      ) : statue ? (
+        <div class="rays__photo">
+          <Photo id="statue" sizes="(max-width: 900px) 90vw, 36vw" widths={[450, 900]} />
+        </div>
+      ) : (
+        <svg viewBox="0 0 400 640" role="img" aria-labelledby="rays-art-t">
+          <title id="rays-art-t">The two rays of the Divine Mercy, red and pale, flowing from one point</title>
+          <defs>
+            <linearGradient id="ra-ground" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0d1624" />
+              <stop offset="1" stop-color="#1b2c45" />
+            </linearGradient>
+            <linearGradient id="ra-red" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ff8a9b" />
+              <stop offset="0.35" stop-color="#d8435b" stop-opacity="0.9" />
+              <stop offset="1" stop-color="#a61e36" stop-opacity="0.15" />
+            </linearGradient>
+            <linearGradient id="ra-pale" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff" />
+              <stop offset="0.35" stop-color="#cfe8f8" stop-opacity="0.9" />
+              <stop offset="1" stop-color="#a9d4ee" stop-opacity="0.12" />
+            </linearGradient>
+            <radialGradient id="ra-heart" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stop-color="#ffffff" />
+              <stop offset="0.4" stop-color="#fff3f5" stop-opacity="0.6" />
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+            <clipPath id="ra-arch"><path d="M0 640 V200 A200 200 0 0 1 400 200 V640 Z" /></clipPath>
+          </defs>
+          <g clip-path="url(#ra-arch)">
+            <rect width="400" height="640" fill="url(#ra-ground)" />
+            <g class="rays__fan">
+              <path class="rays__ray rays__ray--red" d="M200 236 L 18 640 L 168 640 Z" fill="url(#ra-red)" />
+              <path class="rays__ray rays__ray--pale" d="M200 236 L 232 640 L 392 640 Z" fill="url(#ra-pale)" />
+            </g>
+            <circle cx="200" cy="236" r="70" fill="url(#ra-heart)" class="rays__heart" />
+          </g>
+          <path d="M1 640 V200 A199 199 0 0 1 399 200 V640" fill="none" stroke="#c9a85c" stroke-opacity="0.5" stroke-width="2" />
+          <text x="200" y="612" text-anchor="middle" font-family="EB Garamond Variable, EB Garamond, serif" font-size="27" fill="#f4f1ea" letter-spacing="0.06em">Jezu, ufam Tobie</text>
+        </svg>
+      )}
+    </figure>
+
+    <div class="rays__text">
+      <p class="label">The image at the heart of the shrine</p>
+      <h2 id="rays-title">The image of the Divine Mercy and its <em>two rays</em></h2>
+      <p class="lead">
+        In 1931, in the convent at Płock, Sister Faustina Kowalska saw Jesus in a white garment, one hand raised in blessing,
+        two rays streaming from His heart. He asked her to have the image painted with the words “Jesus, I trust in You.”
+        The first painting was made in Vilnius in 1934.
+      </p>
+      <blockquote class="rays__quote">
+        <p>“The two rays denote Blood and Water.”</p>
+        <cite>Diary of St. Faustina, 299</cite>
+      </blockquote>
+      <dl class="rays__key">
+        <div>
+          <dt><span class="swatch swatch--pale" aria-hidden="true"></span>The pale ray</dt>
+          <dd>Water, “which makes souls righteous.”</dd>
+        </div>
+        <div>
+          <dt><span class="swatch swatch--red" aria-hidden="true"></span>The red ray</dt>
+          <dd>Blood, “which is the life of souls.”</dd>
+        </div>
+      </dl>
+      {more && <a class="link" href="/devotion">Read about the devotion and the Chaplet</a>}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { scrollProgress } from '../scripts/scroll-progress.js';
+  document.querySelectorAll('[data-moment="rays"]').forEach((el) => {
+    const fan = el.querySelector('.rays__fan');
+    if (!fan) return;
+    scrollProgress(el, (p) => el.style.setProperty('--fan', Math.min(1, p * 1.6).toFixed(3)), { end: 0.4 });
+  });
+</script>
+
+<style>
+  .rays {
+    --fan: 1;
+    overflow: clip;
+  }
+  .rays__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(32px, 6vw, 110px);
+    align-items: center;
+  }
+  .rays__art {
+    margin: 0;
+  }
+  .rays__art svg,
+  .rays__art img {
+    width: 100%;
+    height: auto;
+    max-height: 760px;
+    object-fit: cover;
+    border-radius: var(--r-frame);
+  }
+  .rays__photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50% 50% 2px 2px / 30% 30% 2px 2px;
+    box-shadow: inset 0 0 0 2px rgb(201 168 92 / 0.45);
+  }
+  .rays__photo :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+  .rays__fan {
+    transform-origin: 200px 236px;
+    transform: scale(calc(0.35 + 0.65 * var(--fan)));
+    opacity: calc(0.25 + 0.75 * var(--fan));
+  }
+  .rays__ray--red {
+    transform-origin: 200px 236px;
+    transform: rotate(calc((1 - var(--fan)) * 14deg));
+  }
+  .rays__ray--pale {
+    transform-origin: 200px 236px;
+    transform: rotate(calc((1 - var(--fan)) * -14deg));
+  }
+  .rays__text {
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .rays__quote {
+    margin: 6px 0 0;
+    padding-left: 22px;
+    position: relative;
+  }
+  .rays__quote::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: linear-gradient(var(--ray-red) 0 50%, var(--pale) 50% 100%);
+  }
+  .rays__quote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+    line-height: 1.15;
+  }
+  .rays__quote cite {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .rays__key {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 32px;
+    width: 100%;
+  }
+  .rays__key dt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+  }
+  .rays__key dd {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+  }
+  .swatch {
+    width: 22px;
+    height: 10px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    rotate: -90deg;
+  }
+  .swatch--red {
+    background: var(--ray-red);
+  }
+  .swatch--pale {
+    background: #7fb6da;
+  }
+  @media (max-width: 900px) {
+    .rays__grid {
+      grid-template-columns: 1fr;
+    }
+    .rays__art {
+      max-width: 420px;
+      width: 100%;
+      justify-self: center;
+    }
+  }
+  @media (max-width: 520px) {
+    .rays__key {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
