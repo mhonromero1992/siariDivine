@@ -27,16 +27,6 @@ export const PHOTO_MANIFEST = [
     width: 960,
     alt: 'Portrait photograph of Sister Faustina Kowalska in her religious habit, 1931.',
   },
-  {
-    id: 'dapitan-coast',
-    file: 'zamboanga-coast.jpg',
-    title: 'Dapitan coast, Zamboanga del Norte, 2023',
-    artist: 'Patrickroque01',
-    license: 'CC BY-SA 4.0',
-    commons: 'Dapitan coast (Dapitan, Zamboanga Del Norte; 10-16-2023).jpg',
-    width: 1920,
-    alt: 'The green coast of Zamboanga del Norte meeting the sea under a wide sky.',
-  },
 ];
 
 const dir = fileURLToPath(new URL('../../public/images/commons/', import.meta.url));

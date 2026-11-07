@@ -176,11 +176,17 @@ README.
 
 ## 10. Imagery rules
 
-- **No photograph of the shrine is shown unless the shrine owns it or licenses it.** Visitor photos
-  found online are copyrighted; they were used only as drawing reference. The shrine is shown through
-  original illustration and the 3D scene, made for this site.
-- Licensed photographs (public domain or CC) carry their credit in `src/data/credits.js`; the footer
-  line opens the full list.
-- Photographs are never captioned, filtered, tilted, rounded or set behind text.
-- To add the shrine's own photographs later: drop them in `public/images/shrine/` and list them in
-  `src/data/photos.js`; the gallery and section slots pick them up.
+- **Real photographs of the shrine lead wherever they exist**, as on manilacathedral.com.ph: the
+  chapel beside "Before you come", a photograph for each of the eight stations, the shrine's own
+  statue for "The two rays", a full-bleed chapter of the chapel at sunset, a gallery with a lightbox.
+- Photographs are slots (`src/data/photos.js`): a slot appears as soon as its file is in
+  `src/assets/shrine/`; until then the drawing or the 3D scene stands in, so no frame is ever empty.
+  Astro converts every file to AVIF and WebP at several widths.
+- **Only photographs the shrine owns, or has written permission to use, go in that folder.** The
+  photographs of the shrine found online (Benjie Layug, 2019; JP Anthony D. Cuñada, 2016) are marked
+  "All rights reserved" and "no duplication without written permission"; they were used only as
+  drawing reference and in a private, uncommitted layout preview (`src/assets/shrine-preview/`).
+- Public-domain and CC photographs (the 1934 Divine Mercy, St. Faustina in 1931) come from
+  Wikimedia Commons with `npm run fetch:photos` and are credited automatically.
+- Photographs are never captioned on the page, filtered, tilted or set behind text; credits sit in
+  the footer's "Sources and credits" dialog and in the gallery lightbox.

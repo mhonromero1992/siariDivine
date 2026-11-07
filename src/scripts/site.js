@@ -102,7 +102,20 @@ function menu() {
       }
     }
   });
-  sheet.querySelectorAll('a[href]').forEach((a) => a.addEventListener('click', () => close(false)));
+  /* links inside the sheet navigate away as they are; the sheet is reset if the page comes back
+     from the back-forward cache (mutating it mid-click would abort the page transition) */
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted && !sheet.hidden) close(false);
+  });
+  /* release the scroll lock before the page is captured for the transition; the sheet stays drawn */
+  sheet.querySelectorAll('a[href]').forEach((a) => a.addEventListener('click', () => (document.documentElement.style.overflow = '')));
+  /* leaving from the open sheet: the sheet already covers the page, so skip the page transition */
+  window.addEventListener('pageswap', (e) => {
+    if (!sheet.hidden && e.viewTransition) {
+      [e.viewTransition.ready, e.viewTransition.finished, e.viewTransition.updateCallbackDone].forEach((p) => p?.catch(() => {}));
+      e.viewTransition.skipTransition();
+    }
+  });
   window.matchMedia('(min-width: 1061px)').addEventListener('change', (m) => m.matches && !sheet.hidden && close(false));
 }
 
@@ -202,6 +215,15 @@ function closing() {
     { passive: true },
   );
 }
+
+/* ── Page transitions: a skipped or interrupted transition is normal, not an error ── */
+const settle = (e) => {
+  const vt = e.viewTransition;
+  if (!vt) return;
+  [vt.ready, vt.finished, vt.updateCallbackDone].forEach((p) => p?.catch(() => {}));
+};
+window.addEventListener('pageswap', settle);
+window.addEventListener('pagereveal', settle);
 
 watchTone();
 watchScrollDirection();

@@ -5,6 +5,11 @@
   box-sizing: border-box;
 }
 
+/* the hidden attribute always wins over a component's display */
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -274,6 +279,16 @@ button:disabled,
     100% 1px;
   color: var(--night);
 }
+/* a link standing on its own (not inside a sentence) gets a full 44px target */
+:is(div, section, aside, article, nav, header, footer, li) > a.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-bottom: 0;
+  background-position:
+    0 calc(50% + 0.78em),
+    0 calc(50% + 0.78em);
+}
 .on-night .link,
 [data-tone='dark'] .link {
   color: var(--pale);
@@ -307,11 +322,14 @@ button:disabled,
   color: var(--muted);
 }
 
-/* Page transitions between documents (progressive enhancement). */
-@view-transition {
-  navigation: auto;
+/* Page transitions between documents (progressive enhancement): larger screens only, where they
+   are cheap; phones navigate instantly. */
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
 }
-@media (prefers-reduced-motion: no-preference) {
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root) {
     animation: vt-out 380ms var(--ease-in-out) both;
   }

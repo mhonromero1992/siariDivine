@@ -68,6 +68,13 @@ const jsonLd = {
     <link rel="preload" href={garamondLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={jostLatin} as="font" type="font/woff2" crossorigin />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>
+      /* a page transition that is skipped or interrupted is normal: settle its promises */
+      addEventListener('pagereveal', function (e) {
+        var vt = e.viewTransition;
+        if (vt) [vt.ready, vt.finished, vt.updateCallbackDone].forEach(function (p) { p && p.catch(function () {}); });
+      });
+    </script>
     <slot name="head" />
   </head>
   <body>

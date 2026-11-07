@@ -45,7 +45,7 @@ const ticks = Array.from({ length: 60 }, (_, i) => i);
       <p class="hour__body">Three in the afternoon is the hour of Christ’s death. Devotees stop, wherever they are, to pray the Chaplet of Divine Mercy or simply to say: Jesus, I trust in You.</p>
       <p class="hour__live" data-hour-flag><span data-hour-text>Every day at three in the afternoon</span></p>
       <div class="hour__actions">
-        <a class="btn" href="/devotion#chaplet">Pray the Chaplet with the bead guide</a>
+        <a class="btn" href="/devotion#chaplet">Pray the Chaplet</a>
       </div>
     </div>
   </div>
@@ -141,7 +141,7 @@ const ticks = Array.from({ length: 60 }, (_, i) => i);
   }
   @media (max-width: 900px) {
     .hour__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .hour__dial {
       width: min(78vw, 340px);
