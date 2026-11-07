@@ -1,0 +1,354 @@
+/* Base: reset, type, layout primitives, focus, transitions. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--nav-h) + 32px);
+  background: var(--limewash);
+  color: var(--night);
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--font-text);
+  font-size: var(--step-body);
+  line-height: 1.6;
+  font-weight: 400;
+  font-kerning: normal;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg,
+canvas,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 450;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+  font-variant-numeric: lining-nums;
+}
+
+h1 {
+  font-size: var(--step-display);
+}
+h2 {
+  font-size: var(--step-h2);
+}
+h3 {
+  font-size: var(--step-h3);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+h1 em,
+h2 em,
+h3 em {
+  font-style: italic;
+  font-weight: 420;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--mercy);
+  color: var(--limewash);
+}
+
+/* Every enabled control shows it can be used (R-39). */
+a[href],
+button:not(:disabled),
+summary,
+select,
+label[for],
+[role='button'],
+input[type='checkbox'],
+input[type='radio'] {
+  cursor: pointer;
+}
+button:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/* Focus: a soft, layered halo, never removed (R-32). */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 3px var(--limewash),
+    0 0 0 6px color-mix(in srgb, var(--mercy) 55%, transparent),
+    0 0 18px 6px color-mix(in srgb, var(--mercy) 22%, transparent);
+  border-radius: 6px;
+}
+[data-tone='dark'] :focus-visible,
+.on-night :focus-visible {
+  box-shadow:
+    0 0 0 3px var(--night),
+    0 0 0 6px color-mix(in srgb, var(--pale) 70%, transparent),
+    0 0 20px 6px color-mix(in srgb, var(--pale) 25%, transparent);
+}
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid CanvasText;
+  }
+}
+
+/* Layout */
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--wrap));
+  margin-inline: auto;
+}
+.wrap--narrow {
+  width: min(100% - 2 * var(--gutter), 860px);
+  margin-inline: auto;
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+.on-night {
+  background: var(--night);
+  color: var(--on-night);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 200;
+  padding: 12px 18px;
+  border-radius: var(--r-control);
+  background: var(--night);
+  color: var(--limewash);
+  font-weight: 500;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Text helpers */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-text);
+  font-size: var(--step-label);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+.on-night .label,
+[data-tone='dark'] .label {
+  color: var(--on-night-muted);
+}
+.label::before {
+  content: '';
+  width: 26px;
+  height: 12px;
+  flex: none;
+  background:
+    linear-gradient(var(--ray-red), var(--ray-red)) left 50% / 100% 1.5px no-repeat;
+  -webkit-mask: linear-gradient(90deg, #000 60%, transparent);
+  mask: linear-gradient(90deg, #000 60%, transparent);
+  opacity: 0.9;
+}
+
+.lead {
+  font-size: var(--step-lead);
+  line-height: 1.55;
+  max-width: 38em;
+}
+
+.muted {
+  color: var(--muted);
+}
+.on-night .muted,
+[data-tone='dark'] .muted {
+  color: var(--on-night-muted);
+}
+
+.prose {
+  max-width: 40em;
+}
+.prose > * + * {
+  margin-top: 1em;
+}
+
+.numerals {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Inline link with the two-ray underline (the identity motif). */
+.link {
+  position: relative;
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--sea);
+  background:
+    linear-gradient(var(--ray-red), var(--ray-red)) 0 100% / 0 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  background-size:
+    0 1.5px,
+    100% 1px;
+  padding-bottom: 2px;
+  transition:
+    background-size var(--t-med) var(--ease-out),
+    color var(--t-fast) linear;
+}
+.link:hover {
+  background-size:
+    100% 1.5px,
+    100% 1px;
+  color: var(--night);
+}
+.on-night .link,
+[data-tone='dark'] .link {
+  color: var(--pale);
+}
+.on-night .link:hover,
+[data-tone='dark'] .link:hover {
+  color: var(--limewash);
+}
+
+/* Limewash: the only texture on the site (the brushed lime of the walls). */
+.limewash {
+  position: relative;
+  isolation: isolate;
+}
+.limewash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.06' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.5  0 0 0 0 0.42  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 320px 320px;
+}
+
+/* Rays divider: one hairline that parts into two rays */
+.ray-divider {
+  display: block;
+  width: 120px;
+  height: 28px;
+  color: var(--muted);
+}
+
+/* Page transitions between documents (progressive enhancement). */
+@view-transition {
+  navigation: auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: vt-out 380ms var(--ease-in-out) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 620ms var(--ease-out) both;
+  }
+  ::view-transition-group(site-nav) {
+    animation-duration: 420ms;
+  }
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    filter: blur(6px) brightness(0.8);
+  }
+}
+@keyframes vt-in {
+  from {
+    clip-path: polygon(46% 0, 54% 0, 50% 0, 50% 0);
+    opacity: 0.6;
+  }
+  55% {
+    opacity: 1;
+  }
+  to {
+    clip-path: polygon(-60% 0, 160% 0, 160% 160%, -60% 160%);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

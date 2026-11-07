@@ -1,0 +1,13 @@
+---
+/**
+ * The identity motif: two rays from one point (DESIGN.md section 4).
+ * Not a logo: the wordmark beside it is the shrine's name set in type.
+ */
+const { class: className = '', size = 26 } = Astro.props;
+---
+<svg class={className} width={size} height={Math.round(size * 30 / 26)} viewBox="0 0 26 30" aria-hidden="true" focusable="false">
+  <path d="M13 1.2v7.6M9.6 4.3h6.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" />
+  <path d="M13 13.4 2.4 29h6.9z" fill="#d8435b" />
+  <path d="M13 13.4 17 29h6.6z" fill="#a9d4ee" />
+  <circle cx="13" cy="13.2" r="1.7" fill="currentColor" />
+</svg>

@@ -1,0 +1,253 @@
+---
+import { NAV, LINKS, SHRINE } from '../data/site.js';
+import Credits from './Credits.astro';
+const year = new Date().getFullYear();
+---
+<footer class="closing on-night" data-tone="dark" data-closing>
+  <svg class="closing__ridges" viewBox="0 0 1600 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="ft-sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4f1ea" stop-opacity="0" />
+        <stop offset="1" stop-color="#101a29" stop-opacity="0" />
+      </linearGradient>
+      <linearGradient id="ft-red" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d8435b" stop-opacity="0.55" />
+        <stop offset="1" stop-color="#d8435b" stop-opacity="0" />
+      </linearGradient>
+      <linearGradient id="ft-pale" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#cfe8f8" stop-opacity="0.5" />
+        <stop offset="1" stop-color="#cfe8f8" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+    <g class="closing__layer" data-depth="0.4">
+      <path fill="#2a3d57" d="M0 132 C120 104 210 92 330 108 C430 121 520 78 640 70 C760 62 850 102 960 98 C1080 94 1170 54 1290 60 C1400 66 1500 96 1600 88 V260 H0Z" />
+    </g>
+    <g class="closing__layer" data-depth="0.8">
+      <path fill="#1d2c42" d="M0 170 C140 150 260 128 380 140 C480 150 560 118 690 122 C820 126 900 156 1030 150 C1140 145 1230 112 1330 104 L1356 92 L1376 104 C1450 110 1530 134 1600 140 V260 H0Z" />
+      <g fill="#f4f1ea" opacity="0.9">
+        <rect x="1338" y="98" width="30" height="9" rx="1" />
+        <path d="M1352 92.5 l3.2 -6 l3.2 6z" fill="#cfe8f8" opacity="0.6" />
+      </g>
+    </g>
+    <rect x="0" y="196" width="1600" height="64" fill="#101a29" />
+    <rect x="1336" y="198" width="9" height="56" fill="url(#ft-red)" />
+    <rect x="1355" y="198" width="9" height="56" fill="url(#ft-pale)" />
+  </svg>
+
+  <div class="wrap closing__main">
+    <div class="closing__inscription" data-light-text>
+      <p class="closing__en" lang="en">Jesus, I trust in You.</p>
+      <p class="closing__other"><span lang="ceb">{SHRINE.inscription[1].text}.</span> <span lang="pl">{SHRINE.inscription[2].text}.</span></p>
+    </div>
+    <div class="closing__cta">
+      <h2 class="closing__title">Prayer intentions <em>from wherever you are</em></h2>
+      <p class="muted">Write the names and your intention. The form sends it to the shrine’s Messenger, where the office can arrange it for a Mass.</p>
+      <div class="closing__actions">
+        <a class="btn" href="/sacraments#intentions" data-magnetic>Send a prayer intention</a>
+        <a class="btn btn--tonal" href={LINKS.facebook} target="_blank" rel="noopener">Follow the shrine on Facebook</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap closing__grid">
+    <div class="closing__col">
+      <p class="label">Find the shrine</p>
+      <address>
+        <a class="link" href={LINKS.maps} target="_blank" rel="noopener">
+          {SHRINE.hill}, {SHRINE.barangay}<br />{SHRINE.town}, {SHRINE.province}
+        </a>
+      </address>
+      <p class="muted closing__small">On the Regional Highway between Dipolog and Sindangan, above the {SHRINE.sea}.</p>
+    </div>
+    <nav class="closing__col closing__pages" aria-label="Footer">
+      <p class="label">The site</p>
+      <ul>
+        <li><a href="/">Home</a></li>
+        {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="closing__col">
+      <p class="label">Under the care of</p>
+      <p>{SHRINE.diocese}<br /><span class="muted">{SHRINE.vicariate}</span></p>
+      <p class="muted closing__small">Linked to {SHRINE.parish.name}, established {SHRINE.parish.established}.</p>
+    </div>
+  </div>
+
+  <div class="wrap closing__legal">
+    <p>© {year} {SHRINE.name}</p>
+    <p><button class="closing__credits" type="button" data-credits-open>Sources and credits</button></p>
+    <p class="muted">Facts on this site checked November 2026.</p>
+  </div>
+</footer>
+
+<Credits />
+
+<style>
+  .closing {
+    position: relative;
+    margin-top: -1px;
+    padding-bottom: calc(28px + var(--safe-bottom));
+    overflow: clip;
+  }
+  .closing__ridges {
+    width: 100%;
+    height: clamp(120px, 16vw, 260px);
+    margin-bottom: clamp(-40px, -2vw, -10px);
+    background: var(--limewash);
+  }
+  .closing__layer {
+    transform: translate3d(calc(var(--px, 0) * var(--d, 1) * 1px), 0, 0);
+    transition: transform 900ms var(--ease-out);
+  }
+  .closing__layer[data-depth='0.4'] {
+    --d: -6;
+  }
+  .closing__layer[data-depth='0.8'] {
+    --d: -14;
+  }
+  .closing__main {
+    display: grid;
+    gap: clamp(36px, 5vw, 72px);
+    grid-template-columns: 1.25fr 1fr;
+    align-items: end;
+    padding-block: clamp(48px, 7vw, 110px) clamp(48px, 6vw, 90px);
+  }
+  .closing__inscription {
+    --lx: 50%;
+  }
+  .closing__en {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 420;
+    font-size: clamp(3rem, 1.4rem + 6.4vw, 7.6rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    background: radial-gradient(420px circle at var(--lx) 40%, #ffffff 0%, var(--pale) 26%, var(--limewash) 60%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .closing__other {
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.9rem);
+    color: var(--on-night-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+  }
+  .closing__title {
+    font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.8rem);
+  }
+  .closing__title em {
+    color: var(--pale);
+  }
+  .closing__cta {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+  .closing__cta > p {
+    max-width: 30em;
+  }
+  .closing__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .closing__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.3fr 1fr;
+    gap: 36px;
+    padding-block: 40px;
+    border-top: 1px solid rgb(244 241 234 / 0.12);
+  }
+  .closing__col {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+  }
+  address {
+    font-style: normal;
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  .closing__small {
+    font-size: 0.9375rem;
+  }
+  .closing__pages ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    columns: 2;
+    column-gap: 28px;
+  }
+  .closing__pages a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    text-decoration: none;
+    color: var(--limewash);
+    background: linear-gradient(90deg, var(--ray-red) 0 50%, var(--pale) 50%) 0 85% / 0 1.5px no-repeat;
+    transition: background-size var(--t-med) var(--ease-out), color var(--t-fast);
+  }
+  .closing__pages a:hover {
+    background-size: 100% 1.5px;
+    color: #fff;
+  }
+  .closing__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(244 241 234 / 0.12);
+    font-size: 0.875rem;
+  }
+  .closing__legal p:last-child {
+    margin-left: auto;
+  }
+  .closing__credits {
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pale);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .closing__credits:hover {
+    color: var(--limewash);
+  }
+  @media (max-width: 900px) {
+    .closing__main {
+      grid-template-columns: 1fr;
+    }
+    .closing__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .closing__pages {
+      grid-column: 1 / -1;
+      order: -1;
+    }
+  }
+  @media (max-width: 560px) {
+    .closing__grid {
+      grid-template-columns: 1fr;
+    }
+    .closing__legal p:last-child {
+      margin-left: 0;
+    }
+    .closing__actions .btn {
+      width: 100%;
+    }
+  }
+</style>

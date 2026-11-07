@@ -1,0 +1,63 @@
+---
+import Mark from './Mark.astro';
+import { NAV, LINKS } from '../data/site.js';
+
+const { current = '', tone = 'light' } = Astro.props;
+---
+<header class="site-nav" data-nav>
+  <nav class="site-nav__bar glass" aria-label="Main" data-nav-bar data-tone={tone}>
+    <a class="wordmark" href="/" aria-label="Divine Mercy Shrine, Siari Hills: home">
+      <Mark class="wordmark__mark" />
+      <span class="wordmark__name" aria-hidden="true">
+        <strong>Divine Mercy Shrine</strong>
+        <span>Siari Hills, Sindangan</span>
+      </span>
+    </a>
+    <ul class="site-nav__links">
+      {NAV.map((item) => (
+        <li>
+          <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>{item.label}</a>
+        </li>
+      ))}
+    </ul>
+    <a class="btn btn--small site-nav__cta" href={LINKS.maps} target="_blank" rel="noopener" data-magnetic>
+      Get directions
+    </a>
+    <button
+      class="btn btn--tonal btn--small site-nav__menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu-sheet"
+      data-menu-open
+    >
+      Menu
+    </button>
+  </nav>
+</header>
+
+<div class="menu-sheet" id="menu-sheet" role="dialog" aria-modal="true" aria-label="Site menu" hidden data-menu>
+  <div class="menu-sheet__top">
+    <a class="wordmark" href="/" aria-label="Divine Mercy Shrine, Siari Hills: home">
+      <Mark class="wordmark__mark" />
+      <span class="wordmark__name" aria-hidden="true">
+        <strong>Divine Mercy Shrine</strong>
+        <span>Siari Hills, Sindangan</span>
+      </span>
+    </a>
+    <button class="btn btn--tonal btn--small" type="button" data-menu-close>Close</button>
+  </div>
+  <ul class="menu-sheet__list">
+    <li style="--i:0"><a href="/" aria-current={current === '/' ? 'page' : undefined}><small>01</small>Home</a></li>
+    {NAV.map((item, i) => (
+      <li style={`--i:${i + 1}`}>
+        <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>
+          <small>{String(i + 2).padStart(2, '0')}</small>{item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <div class="menu-sheet__foot" data-tone="dark">
+    <a class="btn btn--block" href={LINKS.maps} target="_blank" rel="noopener">Get directions</a>
+    <a class="btn btn--tonal btn--block" href={LINKS.facebook} target="_blank" rel="noopener">Follow the shrine on Facebook</a>
+  </div>
+</div>

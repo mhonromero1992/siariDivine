@@ -1,0 +1,309 @@
+---
+import { LINKS, SHRINE } from '../data/site.js';
+import { nextDivineMercySunday, formatLong, isoDate } from '../scripts/liturgical.js';
+
+const dms = nextDivineMercySunday(new Date());
+---
+<section class="hero on-night" data-tone="dark" aria-labelledby="hero-title" data-hero>
+  <div class="hero__stage" aria-hidden="true">
+    <picture>
+      <source media="(max-aspect-ratio: 9/10)" srcset="/images/hero-poster-portrait.webp" type="image/webp" />
+      <source srcset="/images/hero-poster-landscape.webp" type="image/webp" />
+      <img
+        class="hero__poster"
+        src="/images/hero-poster-landscape.jpg"
+        width="1920"
+        height="1080"
+        alt=""
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+    <canvas class="hero__canvas" data-hero-canvas></canvas>
+    <div class="hero__scrim"></div>
+  </div>
+
+  <div class="wrap hero__content">
+    <p class="label hero__kicker" data-rise style="--d:0">Diocesan shrine · {SHRINE.diocese}</p>
+    <h1 id="hero-title" class="hero__title">
+      <span class="hero__line"><span data-rise style="--d:1">The Divine Mercy</span></span>
+      <span class="hero__line"><span data-rise style="--d:2">Shrine on <em>Siari Hills</em></span></span>
+    </h1>
+
+    <p class="hero__inscription" data-rise style="--d:3">
+      <span class="hero__words" data-inscription aria-live="off">
+        {SHRINE.inscription.map((line, i) => (
+          <span lang={line.lang} data-word={i} aria-hidden={i === 0 ? undefined : 'true'} class={i === 0 ? 'is-on' : ''}>{line.text}.</span>
+        ))}
+      </span>
+      <span class="hero__words-note">Written on the chapel in English, Cebuano and Polish</span>
+    </p>
+
+    <p class="hero__lead" data-rise style="--d:4">
+      A whitewashed chapel crowned by a great statue of the Divine Mercy, above the {SHRINE.sea} on the
+      highway between Dipolog and Sindangan.
+    </p>
+
+    <div class="hero__actions" data-rise style="--d:5">
+      <a class="btn" href={LINKS.maps} target="_blank" rel="noopener" data-magnetic data-dock-hide>Get directions</a>
+      <a class="btn btn--tonal" href="/devotion#chaplet">Pray the Chaplet</a>
+    </div>
+
+    <dl class="hero__facts" data-rise style="--d:6">
+      <div data-hour-flag>
+        <dt>The Hour of Mercy</dt>
+        <dd data-hour-text="short">Every day at 3:00 pm</dd>
+      </div>
+      <div>
+        <dt>Divine Mercy Sunday</dt>
+        <dd><time datetime={isoDate(dms.date)}>{formatLong(dms.date)}</time></dd>
+      </div>
+      <div>
+        <dt>Admission</dt>
+        <dd>Free</dd>
+      </div>
+    </dl>
+  </div>
+
+  <button class="hero__pause" type="button" aria-pressed="false" data-hero-pause hidden>
+    <span class="hero__pause-icon" aria-hidden="true"></span>
+    <span data-pause-label>Pause the scene</span>
+  </button>
+</section>
+
+<script>
+  import '../scripts/hero.js';
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-block: calc(var(--nav-h) + 48px) 56px;
+    overflow: clip;
+    background: #0a1322;
+  }
+  .hero__stage {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__poster,
+  .hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__canvas {
+    opacity: 0;
+    transition: opacity 1200ms var(--ease-out);
+  }
+  .hero[data-gl='on'] .hero__canvas {
+    opacity: 1;
+  }
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgb(8 15 27 / 0.82) 0%, rgb(8 15 27 / 0.55) 34%, rgb(8 15 27 / 0) 62%),
+      linear-gradient(0deg, rgb(8 15 27 / 0.55) 0%, rgb(8 15 27 / 0) 30%);
+  }
+  .hero__content {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: 22px;
+    max-width: var(--wrap);
+  }
+  .hero__content > * {
+    max-width: 620px;
+  }
+  .hero__title {
+    font-size: clamp(2.6rem, 1.15rem + 4.5vw, 5.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.028em;
+    font-weight: 430;
+    color: var(--limewash);
+  }
+  .hero__content > .hero__title {
+    max-width: none;
+  }
+  @media (min-width: 761px) {
+    .hero__line {
+      white-space: nowrap;
+    }
+  }
+  .hero__line {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.06em;
+  }
+  .hero__line > span {
+    display: inline-block;
+  }
+  .hero__title em {
+    color: var(--pale);
+  }
+  .hero__inscription {
+    display: grid;
+    gap: 4px;
+  }
+  .hero__words {
+    position: relative;
+    display: grid;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.45rem, 1.15rem + 1.1vw, 2.15rem);
+    line-height: 1.15;
+    color: var(--limewash);
+  }
+  .hero__words > span {
+    grid-area: 1 / 1;
+    background: linear-gradient(90deg, #ffd6dd 0%, var(--limewash) 45%, var(--pale) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0;
+    filter: blur(6px);
+    transition:
+      opacity 900ms var(--ease-out),
+      filter 900ms var(--ease-out);
+  }
+  .hero__words > span.is-on {
+    opacity: 1;
+    filter: blur(0);
+  }
+  .hero__words-note {
+    font-size: var(--step-label);
+    color: var(--on-night-muted);
+  }
+  .hero__lead {
+    font-size: var(--step-lead);
+    line-height: 1.5;
+    color: #dfe3ea;
+    max-width: 34em;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 36px;
+    margin: 18px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid rgb(244 241 234 / 0.14);
+    max-width: 680px;
+  }
+  .hero__facts div {
+    display: grid;
+    gap: 2px;
+  }
+  .hero__facts dt {
+    font-size: var(--step-label);
+    color: var(--on-night-muted);
+  }
+  .hero__facts dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--limewash);
+    font-variant-numeric: lining-nums;
+  }
+  .hero__facts [data-hour-now='true'] dd {
+    color: #ffc2cc;
+  }
+  .hero__pause {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 14px 0 12px;
+    border: 0;
+    border-radius: var(--r-control);
+    background: rgb(244 241 234 / 0.08);
+    color: var(--on-night-muted);
+    font-size: 0.875rem;
+    transition:
+      background-color var(--t-fast),
+      color var(--t-fast);
+  }
+  .hero__pause:hover {
+    background: rgb(244 241 234 / 0.16);
+    color: var(--limewash);
+  }
+  .hero__pause-icon {
+    width: 10px;
+    height: 12px;
+    border-inline: 3px solid currentColor;
+  }
+  .hero__pause[aria-pressed='true'] .hero__pause-icon {
+    border: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid currentColor;
+    border-block: 6px solid transparent;
+  }
+
+  /* the entrance: once, on load */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero [data-rise] {
+      opacity: 0;
+      translate: 0 0.6em;
+    }
+    .hero__line > [data-rise] {
+      translate: 0 105%;
+      opacity: 1;
+    }
+    html.is-ready .hero [data-rise] {
+      opacity: 1;
+      translate: 0 0;
+      transition:
+        opacity 900ms var(--ease-out),
+        translate 1100ms var(--ease-out);
+      transition-delay: calc(var(--d, 0) * 90ms + 250ms);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      align-items: start;
+      min-height: 0;
+      padding-block: calc(var(--nav-h) + 36px) clamp(300px, 52vw + 120px, 420px);
+    }
+    .hero__scrim {
+      background: linear-gradient(180deg, rgb(8 15 27 / 0.88) 0%, rgb(8 15 27 / 0.72) 50%, rgb(8 15 27 / 0) 72%);
+    }
+    .hero__content {
+      gap: 16px;
+    }
+    .hero__actions {
+      width: 100%;
+    }
+    .hero__actions .btn {
+      flex: 1 1 160px;
+    }
+    .hero__facts {
+      gap: 10px 24px;
+      margin-top: 4px;
+      padding-top: 14px;
+    }
+    .hero__facts dd {
+      font-size: 1.1rem;
+    }
+    .hero__pause {
+      bottom: 14px;
+    }
+  }
+</style>

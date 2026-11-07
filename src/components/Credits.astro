@@ -1,0 +1,33 @@
+---
+import { SOURCES } from '../data/site.js';
+import { PHOTO_CREDITS } from '../data/credits.js';
+---
+<dialog class="dialog" id="credits" aria-labelledby="credits-title" data-credits>
+  <div class="dialog__inner">
+    <div class="dialog__head">
+      <h2 id="credits-title" style="font-size:2rem">Sources and credits</h2>
+      <button class="btn btn--tonal btn--small" type="button" data-credits-close>Close</button>
+    </div>
+    <p class="muted">Every fact about the shrine on this site comes from one of these sources. If something has changed, tell the shrine office so the page can be corrected.</p>
+    <h3>Facts about the shrine</h3>
+    <ol>
+      {Object.values(SOURCES).map((s) => (
+        <li><a class="link" href={s.url} target="_blank" rel="noopener">{s.label}</a></li>
+      ))}
+    </ol>
+    <h3>Pictures</h3>
+    <ol>
+      <li>The 3D scene, the drawing of the grounds and all other artwork were made for this site, drawn from visitor descriptions and photographs of the shrine.</li>
+      {PHOTO_CREDITS.map((c) => (
+        <li>
+          <a class="link" href={c.page} target="_blank" rel="noopener">{c.title}</a>, {c.artist}, {c.license}
+        </li>
+      ))}
+    </ol>
+    <h3>Type</h3>
+    <ol>
+      <li>EB Garamond by Georg Duffner and Octavio Pardo, SIL Open Font License.</li>
+      <li>Jost by Owen Earl, SIL Open Font License.</li>
+    </ol>
+  </div>
+</dialog>

@@ -1,0 +1,68 @@
+/* Tokens. Every value has its reason in DESIGN.md. */
+:root {
+  /* Colour: the shrine's own paint */
+  --limewash: #f4f1ea;
+  --limewash-2: #eae4d8;
+  --limewash-3: #dfd7c7;
+  --night: #101a29;
+  --night-2: #172437;
+  --night-3: #22334b;
+  --sea: #1d4a6e;
+  --pale: #a9d4ee;
+  --mercy: #a61e36;
+  --mercy-deep: #8a1529;
+  --mercy-glow: #e0566c;
+  --muted: #545f6e;
+  --on-night: #f4f1ea;
+  --on-night-muted: #b9c2cf;
+
+  /* Rays, for artwork and the identity motif (never body text) */
+  --ray-red: #d8435b;
+  --ray-pale: #cfe8f8;
+
+  /* Type */
+  --font-display: 'EB Garamond Variable', 'EB Garamond', Garamond, 'Times New Roman', serif;
+  --font-text: 'Jost Variable', Jost, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --step-display: clamp(2.75rem, 1.55rem + 5.2vw, 6.25rem);
+  --step-h2: clamp(2.1rem, 1.45rem + 2.7vw, 3.6rem);
+  --step-h3: clamp(1.3rem, 1.15rem + 0.5vw, 1.55rem);
+  --step-lead: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
+  --step-body: 1.0625rem;
+  --step-small: 0.875rem;
+  --step-label: 0.8125rem;
+
+  /* Space: a 4px base, irregular on purpose between sections (RHYTHM 3) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --wrap: 1240px;
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+
+  /* Shape */
+  --r-frame: 2px;
+  --r-control: 12px;
+  --r-float: 22px;
+
+  /* Elevation: only things that float above the page */
+  --shadow-float: 0 1px 0 rgb(255 255 255 / 0.5) inset, 0 18px 40px -18px rgb(16 26 41 / 0.45),
+    0 4px 14px -6px rgb(16 26 41 / 0.25);
+  --shadow-dialog: 0 40px 80px -30px rgb(16 26 41 / 0.6);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 180ms;
+  --t-med: 320ms;
+  --t-slow: 700ms;
+
+  --nav-h: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}

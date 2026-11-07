@@ -1,0 +1,85 @@
+---
+import '@fontsource-variable/eb-garamond/wght.css';
+import '@fontsource-variable/eb-garamond/wght-italic.css';
+import '@fontsource-variable/jost/wght.css';
+import garamondLatin from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
+import jostLatin from '@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/components.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Dock from '../components/Dock.astro';
+import { SHRINE, LINKS } from '../data/site.js';
+
+const {
+  title,
+  description,
+  current = '',
+  navTone = 'light',
+  page = 'page',
+  image = '/og.jpg',
+} = Astro.props;
+
+const fullTitle = title ? `${title} · Divine Mercy Shrine, Siari Hills` : 'Divine Mercy Shrine on Siari Hills, Sindangan';
+const site = Astro.site && !String(Astro.site).includes('.example') ? Astro.site : null;
+const abs = (p) => (site ? new URL(p, site).href : p);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': ['PlaceOfWorship', 'CatholicChurch'],
+  name: SHRINE.name,
+  alternateName: `${SHRINE.shortName}, ${SHRINE.hill}`,
+  description: 'A diocesan shrine of the Divine Mercy on Siari Hills, Sindangan, overlooking the Sulu Sea.',
+  isAccessibleForFree: true,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${SHRINE.hill}, ${SHRINE.barangay}, Regional Highway`,
+    addressLocality: SHRINE.town,
+    addressRegion: SHRINE.province,
+    postalCode: SHRINE.postcode,
+    addressCountry: 'PH',
+  },
+  hasMap: LINKS.maps,
+  sameAs: [LINKS.facebook],
+};
+---
+<!doctype html>
+<html lang="en" data-page={page}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#101a29" />
+    <meta name="page-type" content="place" />
+    <meta name="site-kind" content="other" />
+    <meta name="page-kind" content="place" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {site && <link rel="canonical" href={abs(Astro.url.pathname)} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Divine Mercy Shrine, Siari Hills" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={abs(image)} />
+    <meta property="og:locale" content="en_PH" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href={garamondLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={jostLatin} as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav current={current} tone={navTone} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <Dock />
+    <script>
+      import '../scripts/site.js';
+    </script>
+  </body>
+</html>
