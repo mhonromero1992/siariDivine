@@ -1,13 +1,7 @@
 ---
 import { SOURCES } from '../data/site.js';
 import { PHOTO_CREDITS } from '../data/credits.js';
-import { SHRINE_PHOTOS } from '../data/photos.js';
-
-const byPhotographer = {};
-for (const p of SHRINE_PHOTOS) {
-  const who = p.credit || 'The Diocesan Shrine of the Divine Mercy';
-  (byPhotographer[who] ||= []).push(p.alt.split(':')[0].split(',')[0].replace(/\.$/, ''));
-}
+import { PHOTO_PEOPLE } from '../data/photos.js';
 ---
 <dialog class="dialog" id="credits" aria-labelledby="credits-title" data-credits>
   <div class="dialog__inner">
@@ -24,8 +18,11 @@ for (const p of SHRINE_PHOTOS) {
     </ol>
     <h3>Pictures</h3>
     <ol>
-      {Object.entries(byPhotographer).map(([who, list]) => (
-        <li>Photographs of the shrine by {who}: {list.length} photographs.</li>
+      {PHOTO_PEOPLE.map((p) => (
+        <li>
+          {p.count} photographs of the shrine by {p.name} ({p.year}), used with permission. From
+          <a class="link" href={p.url} target="_blank" rel="noopener">{p.name}’s post on the shrine</a>.
+        </li>
       ))}
       <li>The 3D scene, the drawing of the grounds and all other artwork were made for this site, drawn from visitor descriptions and photographs of the shrine.</li>
       {PHOTO_CREDITS.map((c) => (

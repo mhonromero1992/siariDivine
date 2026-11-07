@@ -21,6 +21,7 @@ const items = await Promise.all(
       id: p.id,
       alt: p.alt,
       credit: p.credit,
+      creditUrl: p.creditUrl,
       shape,
       w,
       h,
@@ -63,7 +64,7 @@ const items = await Promise.all(
         </div>
       </div>
     </dialog>
-    <script type="application/json" data-gallery-items set:html={JSON.stringify(items.map(({ large, alt, credit, w, h }) => ({ large, alt, credit, w, h })))} />
+    <script type="application/json" data-gallery-items set:html={JSON.stringify(items.map(({ large, alt, credit, creditUrl, w, h }) => ({ large, alt, credit, creditUrl, w, h })))} />
   </section>
 )}
 
@@ -84,7 +85,18 @@ const items = await Promise.all(
       img.height = it.h;
       img.alt = it.alt;
       alt.textContent = `${index + 1} / ${items.length}. ${it.alt}`;
-      credit.textContent = it.credit ? `Photograph: ${it.credit}.` : '';
+      credit.textContent = '';
+      if (it.credit) {
+        credit.append('Photograph: ');
+        if (it.creditUrl) {
+          const a = document.createElement('a');
+          a.href = it.creditUrl;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.textContent = it.credit;
+          credit.append(a, '.');
+        } else credit.append(`${it.credit}.`);
+      }
     };
     root.querySelectorAll('[data-index]').forEach((b) =>
       b.addEventListener('click', () => {
@@ -180,6 +192,11 @@ const items = await Promise.all(
   }
   .lightbox__credit {
     color: var(--on-night-muted);
+  }
+  .lightbox__credit :global(a) {
+    color: var(--pale);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   .lightbox__controls {
     display: flex;

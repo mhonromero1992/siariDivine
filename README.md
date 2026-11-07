@@ -37,7 +37,7 @@ built as folders (`shrine/index.html`, `visit/index.html`…), which every host 
 Nothing on the site is invented. Where the shrine has not published something, the site points to
 the shrine's own channel instead of guessing. Fill these in and rebuild:
 
-1. **Photographs of the shrine** (see below). This is the biggest improvement still open.
+1. **More photographs of the shrine, if you like** (see below). Sixteen are already published.
 2. **The Facebook page.** `src/data/site.js` → `LINKS.facebook` and `LINKS.messenger` use the page
    found by search (`profile.php?id=274728832698753`). Confirm it is the shrine's official page.
 3. **Mass and confession times.** `src/data/schedule.js`. While empty, the Masses page sends people to
@@ -66,25 +66,19 @@ headers and the gallery. Astro converts each to AVIF and WebP at several widths 
 | `arch.jpg` | Station 1 |
 | `petitions.jpg`, `saints.jpg` | Stations 7 and 8 |
 
-Credit each one in `src/data/photos.js` → `CREDITS` (for example `chapel: 'Shrine office, 2026'`).
+Credit each one in `src/data/photos.js`: add the photographer to `PHOTOGRAPHERS` and the slot to
+`CREDITS`. The footer, the credits list and the gallery name them and link to their work.
 
-**Only photographs the shrine owns, or has written permission to use.** The photographs of the
-shrine that exist online belong to two travel writers and are marked "All rights reserved" (Benjie
-Layug, 2019) and "Unauthorized use and/or duplication … without express and written permission …
-is strictly prohibited" (JP Anthony D. Cuñada, 2016). They were used only as drawing reference and in
-a private layout preview that is never committed (`src/assets/shrine-preview/` is in `.gitignore`).
+**Published with permission.** The sixteen photographs now on the site are by Benjie Layug (2019)
+and JP Anthony D. Cuñada (2016), published with their permission as confirmed by the site owner on
+7 November 2026. Both blogs otherwise reserve all rights ("All rights reserved"; "Unauthorized use
+and/or duplication … without express and written permission … is strictly prohibited"), so keep
+their written permission on file, and keep the credits and links to their posts in place. Remove a
+photograph by deleting its file from `src/assets/shrine/`; its spot falls back to the drawing.
 
-The quickest routes to real photographs:
-
-- **The shrine's own photographs**, for example from its Facebook page, saved by someone the shrine
-  authorises.
-- **Permission from the two writers.** A message you can send:
-
-  > Good day! I am helping the Diocesan Shrine of the Divine Mercy on Siari Hills, Sindangan, build
-  > its website. Your photographs of the shrine from [your post, with link] are among the best we
-  > have found. May the shrine use some of them on its website, credited to you by name with a link
-  > to your post? We would only use the photographs of the shrine and would remove any you prefer
-  > we did not use. Thank you, and God bless!
+Only add photographs the shrine owns or has written permission to use. The shrine's own photographs
+(for example from its Facebook page, saved by someone the shrine authorises) can replace or join
+these at any time.
 
 **Public-domain photographs** (the first Divine Mercy painting, Vilnius 1934; St. Faustina in 1931)
 are listed in `src/data/credits.js`. Run `npm run fetch:photos` on a normal connection to download

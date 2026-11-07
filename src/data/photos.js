@@ -33,8 +33,41 @@ export const PHOTO_SLOTS = {
   'view-coast': { file: 'view-coast', alt: 'The coast of Sindangan seen from the shrine, the sea curving away under a wide sky.' },
 };
 
-/** Credits for committed photographs: { slot: 'Photographer, year' }. */
-export const CREDITS = {};
+/**
+ * Who took each photograph. Published with the photographers' permission, as confirmed by the
+ * site owner on 7 November 2026; each credit names the photographer and links to the original post.
+ */
+export const PHOTOGRAPHERS = {
+  layug: {
+    name: 'Benjie Layug',
+    year: 2019,
+    url: 'https://benjielayug.com/2019/07/diocesan-shrine-of-the-divine-mercy-sindangan-zamboanga-del-norte.html',
+  },
+  cunada: {
+    name: 'JP Anthony D. Cuñada',
+    year: 2016,
+    url: 'https://pilarcapiz.com/2016/01/20/for-the-devotee-the-divine-mercy-shrine-overlooking-the-sea-on-siare-hills-sindangan-zambaonga-del-norte/',
+  },
+};
+
+export const CREDITS = {
+  chapel: 'layug',
+  'chapel-dusk': 'cunada',
+  interior: 'layug',
+  'interior-dusk': 'cunada',
+  entrance: 'layug',
+  statue: 'layug',
+  'our-lady': 'layug',
+  tower: 'layug',
+  'walk-of-faith': 'cunada',
+  arch: 'cunada',
+  petitions: 'layug',
+  faustina: 'layug',
+  saints: 'layug',
+  gethsemane: 'layug',
+  view: 'layug',
+  'view-coast': 'layug',
+};
 
 const byName = (globbed) =>
   Object.fromEntries(Object.entries(globbed).map(([path, img]) => [path.split('/').pop().replace(/\.\w+$/, ''), img]));
@@ -47,10 +80,17 @@ export function shrinePhoto(id) {
   const img = slot && files[slot.file];
   if (!img) return null;
   const isPreview = !committedNames.has(slot.file);
-  return { id, ...slot, img, credit: isPreview ? previewCredit[slot.file] || '' : CREDITS[id] || '', preview: isPreview };
+  const who = PHOTOGRAPHERS[CREDITS[id]];
+  const credit = isPreview ? previewCredit[slot.file] || '' : who ? `${who.name}, ${who.year}` : '';
+  return { id, ...slot, img, credit, creditUrl: who?.url || '', photographer: who?.name || '', preview: isPreview };
 }
 
 export const SHRINE_PHOTOS = Object.keys(PHOTO_SLOTS).map(shrinePhoto).filter(Boolean);
+
+/** The photographers whose published work is on the site, for the footer and the credits list. */
+export const PHOTO_PEOPLE = Object.values(PHOTOGRAPHERS)
+  .map((p) => ({ ...p, count: SHRINE_PHOTOS.filter((s) => !s.preview && s.photographer === p.name).length }))
+  .filter((p) => p.count > 0);
 export const HAS_PREVIEW_PHOTOS = SHRINE_PHOTOS.some((p) => p.preview);
 
 /** Which photograph illustrates each station of the grounds. */

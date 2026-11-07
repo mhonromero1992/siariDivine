@@ -1,5 +1,6 @@
 ---
 import { NAV, LINKS, SHRINE } from '../data/site.js';
+import { PHOTO_PEOPLE } from '../data/photos.js';
 import Credits from './Credits.astro';
 const year = new Date().getFullYear();
 ---
@@ -75,6 +76,17 @@ const year = new Date().getFullYear();
 
   <div class="wrap closing__legal">
     <p>© {year} {SHRINE.name}</p>
+    {PHOTO_PEOPLE.length > 0 && (
+      <p class="closing__photo-credit">
+        Photographs of the shrine:
+        {PHOTO_PEOPLE.map((p, i) => (
+          <>
+            {i > 0 && (i === PHOTO_PEOPLE.length - 1 ? ' and ' : ', ')}
+            <a href={p.url} target="_blank" rel="noopener">{p.name}</a>
+          </>
+        ))}
+      </p>
+    )}
     <p><button class="closing__credits" type="button" data-credits-open>Sources and credits</button></p>
     <p class="muted">Facts on this site checked November 2026.</p>
   </div>
@@ -211,6 +223,21 @@ const year = new Date().getFullYear();
   }
   .closing__legal p:last-child {
     margin-left: auto;
+  }
+  .closing__photo-credit {
+    color: var(--on-night-muted);
+  }
+  .closing__photo-credit a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--pale);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .closing__photo-credit a:hover {
+    color: var(--limewash);
   }
   .closing__credits {
     min-height: 44px;

@@ -183,9 +183,9 @@ README.
   `src/assets/shrine/`; until then the drawing or the 3D scene stands in, so no frame is ever empty.
   Astro converts every file to AVIF and WebP at several widths.
 - **Only photographs the shrine owns, or has written permission to use, go in that folder.** The
-  photographs of the shrine found online (Benjie Layug, 2019; JP Anthony D. Cuñada, 2016) are marked
-  "All rights reserved" and "no duplication without written permission"; they were used only as
-  drawing reference and in a private, uncommitted layout preview (`src/assets/shrine-preview/`).
+  sixteen photographs published now are by Benjie Layug (2019) and JP Anthony D. Cuñada (2016),
+  used with their permission as confirmed by the site owner on 7 November 2026, and credited by name
+  with a link to each original post in the footer, the credits list and the gallery.
 - Public-domain and CC photographs (the 1934 Divine Mercy, St. Faustina in 1931) come from
   Wikimedia Commons with `npm run fetch:photos` and are credited automatically.
 - Photographs are never captioned on the page, filtered, tilted or set behind text; credits sit in
